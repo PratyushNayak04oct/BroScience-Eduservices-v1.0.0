@@ -120,7 +120,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="relative z-50 flex items-center gap-3">
             <ThemeToggle className="hidden sm:inline-flex" />
             <Button href="/contact" className="hidden md:inline-flex !px-5 !py-2.5 !text-xs">
               Book Free Counselling

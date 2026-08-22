@@ -61,7 +61,7 @@ export default function Hero() {
           { opacity: 1, y: 0, duration: 0.7 },
           "-=0.5"
         )
-        .fromTo(ctaRef.current, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.6 }, "-=0.4")
+        .fromTo(ctaRef.current, { y: 12 }, { y: 0, duration: 0.5 }, "-=0.4")
         .fromTo(trustRef.current, { opacity: 0 }, { opacity: 1, duration: 0.5 }, "-=0.3");
     }, contentRef);
 
@@ -123,7 +123,7 @@ export default function Hero() {
         ref={contentRef}
         className="relative mx-auto grid w-full max-w-7xl items-center gap-10 px-5 py-28 sm:px-8 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)] lg:gap-8 lg:py-32"
       >
-        <div className="relative z-10 flex flex-col gap-8 lg:pr-4">
+        <div className="relative z-30 isolate flex flex-col gap-8 lg:pr-4">
           <p
             ref={eyebrowRef}
             className="text-xs font-medium uppercase tracking-[0.28em] text-[var(--brand-gold)]"
@@ -157,7 +157,7 @@ export default function Hero() {
           </p>
         </div>
 
-        <div className="relative z-10 h-[min(72vw,520px)] w-full lg:h-[min(78vh,640px)] pointer-events-auto">
+        <div className="relative z-10 isolate h-[min(72vw,520px)] w-full overflow-hidden lg:h-[min(78vh,640px)]">
           <div className="glass-orb pointer-events-none absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
           {canRenderWebGL === null || (useCanvas && !sceneReady) ? (
             <BookLoading className="absolute inset-0 rounded-sm" />

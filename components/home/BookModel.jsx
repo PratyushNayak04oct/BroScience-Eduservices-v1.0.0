@@ -1,150 +1,99 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { useGLTF } from "@react-three/drei";
+import { useAnimations, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
-import { createCursorParallax, createFloatAnimation } from "@/lib/bookAnimation";
 import { prefersReducedMotion } from "@/lib/gsap";
 
 const MODEL_PATH = "/models/broscience-book.glb";
-const TARGET_HEIGHT = 2.35;
+useGLTF.setDecoderPath("https://www.gstatic.com/draco/versioned/decoders/1.5.7/");
+const TARGET_SIZE = 2.4;
+const MAX_ROT = { x: THREE.MathUtils.degToRad(4), y: THREE.MathUtils.degToRad(6), z: THREE.MathUtils.degToRad(1.5) };
 
-function findNode(root, name) {
-  let match = null;
-  root.traverse((child) => {
-    if (child.name === name) match = child;
-  });
-  return match;
-}
-
-function collectNamed(root, prefix) {
-  const nodes = [];
-  root.traverse((child) => {
-    if (child.name?.startsWith(prefix)) nodes.push(child);
-  });
-  return nodes.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
-}
-
-function prepareBook(root) {
+function prepare(root) {
   const box = new THREE.Box3().setFromObject(root);
   const size = new THREE.Vector3();
   const center = new THREE.Vector3();
   box.getSize(size);
   box.getCenter(center);
   root.position.sub(center);
-  const scale = TARGET_HEIGHT / Math.max(size.x, size.y, size.z, 1);
-  root.scale.setScalar(scale);
-
-  root.traverse((child) => {
-    if (!child.isMesh || !child.material) return;
-    const name = `${child.name} ${child.parent?.name || ""}`;
-    const materials = Array.isArray(child.material) ? child.material : [child.material];
-    const next = materials.map((material) => {
-      const cloned = material.clone();
-      if (/page|paper/i.test(name)) {
-        cloned.color = new THREE.Color("#f4f4f4");
-        cloned.roughness = 0.82;
-        cloned.metalness = 0;
-      }
-      cloned.needsUpdate = true;
-      return cloned;
-    });
-    child.material = Array.isArray(child.material) ? next : next[0];
-    child.castShadow = false;
-    child.receiveShadow = false;
-  });
+  root.scale.setScalar(TARGET_SIZE / Math.max(size.x, size.y, size.z, 1));
 }
 
-export default function BookModel({ animationRefs, onReady, hovered = false }) {
-  const bookRef = useRef(null);
-  const parallaxRef = useRef(null);
-  const frontHingeRef = useRef(null);
-  const pageHingesRef = useRef([]);
-  const open = useRef(0);
-  const parallaxControlRef = useRef(null);
-  const floatRef = useRef(null);
-
-  const { scene } = useGLTF(MODEL_PATH);
-
-  const bookScene = useMemo(() => {
-    const clone = scene.clone(true);
-    prepareBook(clone);
-    return clone;
-  }, [scene]);
+export default function BookModel({ animationRefs, onReady, hovered = false, mouse = { x: 0, y: 0 } }) {
+  const wrapRef = useRef(null);
+  const progress = useRef(0);
+  const floatPhase = useRef(0);
+  const mouseRot = useRef({ x: 0, y: 0, z: 0 });
+  const { scene, animations } = useGLTF(MODEL_PATH, true);
+  const { actions, mixer } = useAnimations(animations, scene);
 
   useEffect(() => {
-    const book = bookRef.current;
-    if (!book) return;
-
-    frontHingeRef.current = findNode(bookScene, "FrontHinge") || findNode(bookScene, "FrontCover");
-    pageHingesRef.current = collectNamed(bookScene, "PageHinge_");
-
-    animationRefs.current.book = book;
-    animationRefs.current.frontCover = frontHingeRef.current;
+    if (!scene.userData.brosciencePrepared) {
+      prepare(scene);
+      scene.userData.brosciencePrepared = true;
+    }
+    animationRefs.current.book = wrapRef.current;
     onReady?.();
-
-    parallaxControlRef.current = createCursorParallax({ maxRotation: 0.04 });
-    floatRef.current = createFloatAnimation(book, { amplitude: 0.025, duration: 3.6 });
-
     return () => {
       animationRefs.current.book = null;
-      animationRefs.current.frontCover = null;
-      parallaxControlRef.current?.dispose();
-      floatRef.current?.kill();
     };
-  }, [animationRefs, bookScene, onReady]);
+  }, [animationRefs, onReady, scene]);
 
   useEffect(() => {
-    const book = bookRef.current;
-    if (!book) return;
-    floatRef.current?.kill();
-    if (!hovered) {
-      floatRef.current = createFloatAnimation(book, { amplitude: 0.025, duration: 3.6 });
-    }
-  }, [hovered]);
+    Object.values(actions).forEach((action) => {
+      if (!action) return;
+      action.reset();
+      action.play();
+      action.paused = true;
+      action.clampWhenFinished = true;
+      action.setLoop(THREE.LoopOnce, 1);
+      action.time = 0;
+      action.enabled = true;
+    });
+  }, [actions]);
 
   useFrame((_, delta) => {
     const reduced = prefersReducedMotion();
-    const alpha = 1 - Math.exp(-delta * (reduced ? 16 : 8));
-    open.current = THREE.MathUtils.lerp(open.current, hovered ? 1 : 0, alpha);
-    const t = open.current;
+    const wrap = wrapRef.current;
+    if (!wrap) return;
 
-    const book = bookRef.current;
-    if (book) {
-      book.rotation.x = THREE.MathUtils.lerp(0.18, 0.22, t);
-      book.rotation.y = THREE.MathUtils.lerp(-0.85, -0.25, t);
-      book.rotation.z = 0.03;
-    }
+    const speed = reduced ? 10 : 2.1;
+    const target = reduced ? 0 : hovered ? 1 : 0;
+    progress.current = THREE.MathUtils.damp(progress.current, target, speed, delta);
 
-    const hinge = frontHingeRef.current;
-    if (hinge) {
-      hinge.rotation.y = -1.15 * t;
-    }
+    Object.values(actions).forEach((action) => {
+      if (!action?.getClip()) return;
+      const duration = action.getClip().duration || 3;
+      action.paused = true;
+      action.enabled = true;
+      action.time = progress.current * duration;
+    });
+    mixer.update(0);
 
-    const camera = animationRefs.current.camera;
-    if (camera) {
-      camera.position.x = THREE.MathUtils.lerp(camera.position.x, hovered ? 0.15 : 0.85, alpha);
-      camera.position.y = THREE.MathUtils.lerp(camera.position.y, hovered ? 0.12 : 0.08, alpha);
-      camera.position.z = THREE.MathUtils.lerp(camera.position.z, hovered ? 3.15 : 3.35, alpha);
-      camera.lookAt(0, 0, 0);
-    }
+    const follow = reduced ? 0.15 : 1;
+    const desiredY = mouse.x * MAX_ROT.y * follow;
+    const desiredX = -mouse.y * MAX_ROT.x * follow;
+    mouseRot.current.x = THREE.MathUtils.damp(mouseRot.current.x, desiredX, 4, delta);
+    mouseRot.current.y = THREE.MathUtils.damp(mouseRot.current.y, desiredY, 4, delta);
 
-    if (hovered || reduced) return;
-    const group = parallaxRef.current;
-    const parallax = parallaxControlRef.current?.rotation;
-    if (!group || !parallax) return;
-    group.rotation.x = THREE.MathUtils.lerp(group.rotation.x, parallax.x, alpha);
-    group.rotation.y = THREE.MathUtils.lerp(group.rotation.y, parallax.y, alpha);
+    floatPhase.current += delta * (reduced ? 0 : 0.45);
+    const idleY = reduced ? 0 : Math.sin(floatPhase.current) * 0.02;
+    const idleX = reduced ? 0 : Math.sin(floatPhase.current * 0.7) * 0.012;
+
+    // Slight three-quarter product view; cover remains readable.
+    wrap.rotation.x = 0.14 + mouseRot.current.x + idleX;
+    wrap.rotation.y = -0.55 + mouseRot.current.y;
+    wrap.rotation.z = mouseRot.current.y * 0.12;
+    wrap.position.y = idleY;
   });
 
   return (
-    <group ref={bookRef}>
-      <group ref={parallaxRef}>
-        <primitive object={bookScene} />
-      </group>
+    <group ref={wrapRef}>
+      <primitive object={scene} />
     </group>
   );
 }
 
-useGLTF.preload(MODEL_PATH);
+useGLTF.preload(MODEL_PATH, true);

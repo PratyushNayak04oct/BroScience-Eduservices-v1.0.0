@@ -33,6 +33,10 @@ function ArrowIcon({ className }) {
   );
 }
 
+function isModifiedClick(event) {
+  return event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0;
+}
+
 export default function Button({
   children,
   variant = "primary",
@@ -45,9 +49,8 @@ export default function Button({
 }) {
   const classes = cn(
     "group relative z-20 inline-flex min-h-11 items-center justify-center gap-2.5 overflow-hidden rounded-full px-6 py-3 text-sm font-medium tracking-wide",
-    "pointer-events-auto touch-manipulation",
-    "transition-[color,background-color,border-color,box-shadow,transform] duration-200 ease-out",
-    "hover:-translate-y-0.5 active:translate-y-0",
+    "pointer-events-auto touch-manipulation cursor-pointer",
+    "transition-[color,background-color,border-color,box-shadow] duration-200 ease-out",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]",
     "disabled:pointer-events-none disabled:opacity-50",
     variants[variant],
@@ -63,9 +66,24 @@ export default function Button({
     </>
   );
 
+  const handleClick = (event) => {
+    onClick?.(event);
+    if (!href || event.defaultPrevented || isModifiedClick(event) || disabled) return;
+
+    const destination = new URL(href, window.location.href);
+    if (destination.origin !== window.location.origin) return;
+
+    const startPath = window.location.pathname;
+    window.setTimeout(() => {
+      if (window.location.pathname === startPath && destination.pathname !== startPath) {
+        window.location.assign(destination.pathname + destination.search + destination.hash);
+      }
+    }, 350);
+  };
+
   if (href) {
     return (
-      <Link href={href} className={classes} onClick={onClick}>
+      <Link href={href} className={classes} onClick={handleClick}>
         {content}
       </Link>
     );
