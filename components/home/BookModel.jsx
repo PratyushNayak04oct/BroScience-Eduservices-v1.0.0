@@ -6,8 +6,8 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { prefersReducedMotion } from "@/lib/gsap";
 
-const MODEL_PATH = "/models/broscience-book.glb?v=5";
-const TARGET_SIZE = 1.48;
+const MODEL_PATH = "/models/broscience-book.glb?v=6";
+const TARGET_SIZE = 1.72;
 const MAX_ROT = {
   x: THREE.MathUtils.degToRad(2.5),
   y: THREE.MathUtils.degToRad(4),
@@ -39,6 +39,12 @@ function prepare(root) {
         if (material.map) {
           material.map.center.set(0.5, 0.5);
           material.map.rotation = 0;
+          if (child.name === "Book_LeftPage") {
+            material.map.wrapS = THREE.RepeatWrapping;
+            material.map.wrapT = THREE.RepeatWrapping;
+            material.map.repeat.set(-1, 1);
+            material.map.offset.set(1, 0);
+          }
           material.map.needsUpdate = true;
         }
         material.roughness = 0.88;
@@ -83,6 +89,7 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
       action.setLoop(THREE.LoopOnce, 1);
       action.time = 0;
       action.enabled = true;
+      action.weight = 1;
     });
     bound.current = true;
   }, [actions]);
@@ -95,15 +102,19 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
     const hovered = Boolean(hoverRef?.current);
     const mouse = mouseRef?.current ?? { x: 0, y: 0 };
     const target = reduced ? 0 : hovered ? 1 : 0;
-    progress.current = THREE.MathUtils.damp(progress.current, target, reduced ? 6 : 1.05, delta);
-    const eased = progress.current * progress.current * (3 - 2 * progress.current);
+    progress.current = THREE.MathUtils.damp(progress.current, target, reduced ? 6 : 1.35, delta);
+    if (Math.abs(progress.current - target) < 0.003) {
+      progress.current = target;
+    }
 
     Object.values(actions).forEach((action) => {
       if (!action?.getClip()) return;
-      const duration = action.getClip().duration || 3;
+      const duration = Math.max(action.getClip().duration, 0.001);
       action.paused = true;
       action.enabled = true;
-      action.time = THREE.MathUtils.clamp(eased * duration, 0, duration);
+      action.weight = 1;
+      const raw = progress.current * duration;
+      action.time = progress.current >= 1 ? Math.max(duration - 0.001, 0) : Math.min(raw, duration - 0.001);
     });
     mixer.update(0);
 
@@ -117,7 +128,7 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
     wrap.rotation.x = 0.06 + mouseRot.current.x;
     wrap.rotation.y = -0.22 + mouseRot.current.y;
     wrap.rotation.z = mouseRot.current.y * 0.05;
-    wrap.position.x = eased * 0.12;
+    wrap.position.x = progress.current * 0.1;
     wrap.position.y = idleY;
   });
 
