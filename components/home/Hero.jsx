@@ -145,7 +145,7 @@ export default function Hero() {
             excellence.
           </p>
 
-          <div ref={ctaRef} className="flex flex-wrap gap-4">
+          <div ref={ctaRef} className="relative z-20 flex flex-wrap gap-4">
             <Button href="/courses">Explore Courses</Button>
             <Button href="/contact" variant="secondary">
               Book Free Counselling
@@ -157,7 +157,7 @@ export default function Hero() {
           </p>
         </div>
 
-        <div className="relative z-10 h-[min(72vw,520px)] w-full lg:h-[min(78vh,640px)]">
+        <div className="relative z-10 h-[min(72vw,520px)] w-full lg:h-[min(78vh,640px)] pointer-events-auto">
           <div className="glass-orb pointer-events-none absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
           {canRenderWebGL === null || (useCanvas && !sceneReady) ? (
             <BookLoading className="absolute inset-0 rounded-sm" />

@@ -1,9 +1,7 @@
 "use client";
 
-import { useRef } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { prefersReducedMotion } from "@/lib/gsap";
 
 const variants = {
   primary:
@@ -45,27 +43,10 @@ export default function Button({
   disabled = false,
   icon,
 }) {
-  const ref = useRef(null);
-
-  const onMove = (event) => {
-    if (prefersReducedMotion() || disabled) return;
-    const node = ref.current;
-    if (!node) return;
-    const rect = node.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 10;
-    const y = ((event.clientY - rect.top) / rect.height - 0.5) * 8;
-    node.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-  };
-
-  const onLeave = () => {
-    const node = ref.current;
-    if (!node) return;
-    node.style.transform = "translate3d(0, 0, 0)";
-  };
-
   const classes = cn(
-    "group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-full px-6 py-3 text-sm font-medium tracking-wide",
-    "transition-[color,background-color,border-color,box-shadow,transform] duration-300 ease-out will-change-transform",
+    "group relative z-20 inline-flex min-h-11 items-center justify-center gap-2.5 overflow-hidden rounded-full px-6 py-3 text-sm font-medium tracking-wide",
+    "pointer-events-auto touch-manipulation",
+    "transition-[color,background-color,border-color,box-shadow,transform] duration-200 ease-out",
     "hover:-translate-y-0.5 active:translate-y-0",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]",
     "disabled:pointer-events-none disabled:opacity-50",
@@ -84,29 +65,14 @@ export default function Button({
 
   if (href) {
     return (
-      <Link
-        ref={ref}
-        href={href}
-        className={classes}
-        onClick={onClick}
-        onMouseMove={onMove}
-        onMouseLeave={onLeave}
-      >
+      <Link href={href} className={classes} onClick={onClick}>
         {content}
       </Link>
     );
   }
 
   return (
-    <button
-      ref={ref}
-      type={type}
-      className={classes}
-      onClick={onClick}
-      disabled={disabled}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-    >
+    <button type={type} className={classes} onClick={onClick} disabled={disabled}>
       {content}
     </button>
   );
