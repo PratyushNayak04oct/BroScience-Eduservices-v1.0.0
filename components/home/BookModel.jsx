@@ -6,12 +6,12 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { prefersReducedMotion } from "@/lib/gsap";
 
-const MODEL_PATH = "/models/broscience-book.glb?v=4";
-const TARGET_SIZE = 2.15;
+const MODEL_PATH = "/models/broscience-book.glb?v=5";
+const TARGET_SIZE = 1.48;
 const MAX_ROT = {
-  x: THREE.MathUtils.degToRad(3.5),
-  y: THREE.MathUtils.degToRad(5),
-  z: THREE.MathUtils.degToRad(1),
+  x: THREE.MathUtils.degToRad(2.5),
+  y: THREE.MathUtils.degToRad(4),
+  z: THREE.MathUtils.degToRad(0.8),
 };
 
 function prepare(root) {
@@ -95,28 +95,29 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
     const hovered = Boolean(hoverRef?.current);
     const mouse = mouseRef?.current ?? { x: 0, y: 0 };
     const target = reduced ? 0 : hovered ? 1 : 0;
-    progress.current = THREE.MathUtils.damp(progress.current, target, reduced ? 8 : 3.4, delta);
+    progress.current = THREE.MathUtils.damp(progress.current, target, reduced ? 6 : 1.05, delta);
+    const eased = progress.current * progress.current * (3 - 2 * progress.current);
 
     Object.values(actions).forEach((action) => {
       if (!action?.getClip()) return;
       const duration = action.getClip().duration || 3;
       action.paused = true;
       action.enabled = true;
-      action.time = THREE.MathUtils.clamp(progress.current * duration, 0, duration);
+      action.time = THREE.MathUtils.clamp(eased * duration, 0, duration);
     });
     mixer.update(0);
 
-    const follow = reduced ? 0.12 : 1;
-    mouseRot.current.x = THREE.MathUtils.damp(mouseRot.current.x, -mouse.y * MAX_ROT.x * follow, 5, delta);
-    mouseRot.current.y = THREE.MathUtils.damp(mouseRot.current.y, mouse.x * MAX_ROT.y * follow, 5, delta);
+    const follow = reduced ? 0.1 : 1;
+    mouseRot.current.x = THREE.MathUtils.damp(mouseRot.current.x, -mouse.y * MAX_ROT.x * follow, 1.8, delta);
+    mouseRot.current.y = THREE.MathUtils.damp(mouseRot.current.y, mouse.x * MAX_ROT.y * follow, 1.8, delta);
 
-    floatPhase.current += delta * (reduced ? 0 : 0.4);
-    const idleY = reduced ? 0 : Math.sin(floatPhase.current) * 0.016;
+    floatPhase.current += delta * (reduced ? 0 : 0.28);
+    const idleY = reduced ? 0 : Math.sin(floatPhase.current) * 0.01;
 
-    wrap.rotation.x = 0.08 + mouseRot.current.x;
-    wrap.rotation.y = -0.32 + mouseRot.current.y;
-    wrap.rotation.z = mouseRot.current.y * 0.08;
-    wrap.position.x = progress.current * 0.22;
+    wrap.rotation.x = 0.06 + mouseRot.current.x;
+    wrap.rotation.y = -0.22 + mouseRot.current.y;
+    wrap.rotation.z = mouseRot.current.y * 0.05;
+    wrap.position.x = eased * 0.12;
     wrap.position.y = idleY;
   });
 

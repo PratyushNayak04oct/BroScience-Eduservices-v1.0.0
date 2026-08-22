@@ -157,7 +157,7 @@ export default function Hero() {
           </p>
         </div>
 
-        <div className="relative z-10 isolate h-[min(72vw,520px)] w-full overflow-hidden lg:h-[min(78vh,640px)]">
+        <div className="relative z-10 isolate h-[min(64vw,440px)] w-full overflow-hidden lg:h-[min(62vh,520px)]">
           <div className="glass-orb pointer-events-none absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
           {canRenderWebGL === null || (useCanvas && !sceneReady) ? (
             <BookLoading className="absolute inset-0 rounded-sm" />
