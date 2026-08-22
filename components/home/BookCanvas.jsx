@@ -4,6 +4,8 @@ import { Suspense, useEffect, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
 import BookModel from "./BookModel";
 
+const REST_CAMERA = { x: 0.72, y: 0.06, z: 3.05 };
+
 function CameraBridge({ animationRefs }) {
   const { camera } = useThree();
 
@@ -22,16 +24,16 @@ function SceneContent({ animationRefs, onReady, hovered }) {
     <>
       <CameraBridge animationRefs={animationRefs} />
 
-      <hemisphereLight args={["#fff6ea", "#1a1012", 0.9]} />
-      <ambientLight intensity={0.6} color="#f7edd8" />
-      <directionalLight position={[3.2, 4.5, 4]} intensity={2.2} color="#fff8ee" />
-      <directionalLight position={[-3.4, 1.6, 1.4]} intensity={0.75} color="#c9a84d" />
+      <hemisphereLight args={["#fff4e6", "#1c1210", 0.75]} />
+      <ambientLight intensity={0.45} color="#f3e6c8" />
+      <directionalLight position={[2.6, 2.8, 3.4]} intensity={1.7} color="#fff7ee" />
+      <directionalLight position={[-2.8, 1.2, 1.6]} intensity={0.55} color="#c9a84d" />
       <spotLight
-        position={[0.2, 3.6, 2.4]}
-        angle={0.55}
-        penumbra={0.85}
-        intensity={1.5}
-        color="#e8c56a"
+        position={[0.4, 2.2, 2.6]}
+        angle={0.5}
+        penumbra={0.9}
+        intensity={1.1}
+        color="#f0d48a"
       />
 
       <BookModel animationRefs={animationRefs} onReady={onReady} hovered={hovered} />
@@ -68,8 +70,8 @@ export default function BookCanvas({ animationRefs, onReady, className }) {
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [1.15, 0.38, 3.55], fov: 34, near: 0.1, far: 40 }}
-        onCreated={({ camera }) => camera.lookAt(0, 0.05, 0)}
+        camera={{ position: [REST_CAMERA.x, REST_CAMERA.y, REST_CAMERA.z], fov: 32, near: 0.1, far: 40 }}
+        onCreated={({ camera }) => camera.lookAt(0, 0.02, 0)}
         gl={{
           antialias: true,
           alpha: true,

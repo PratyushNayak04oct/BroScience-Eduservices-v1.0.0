@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { CONCEPT_WORDS } from "@/lib/bookAnimation";
 import { cn } from "@/lib/utils";
+
+const CONCEPT_WORDS = ["CONCEPT", "CLARITY", "PRACTICE", "PROGRESS"];
 
 export default function BookFallback({ animationRefs, className }) {
   const containerRef = useRef(null);
