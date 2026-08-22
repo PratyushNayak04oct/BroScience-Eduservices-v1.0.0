@@ -3,6 +3,7 @@ import GlassCard from "@/components/ui/GlassCard";
 import Button from "@/components/ui/Button";
 import ContactForm from "@/components/contact/ContactForm";
 import Reveal from "@/components/ui/Reveal";
+import CampusMap from "@/components/layout/CampusMap";
 
 const contactInfo = [
   {
@@ -17,8 +18,8 @@ const contactInfo = [
   },
   {
     label: "Address",
-    value: "123 Education Lane, Knowledge Park",
-    note: "City, State — 400001", // PLACEHOLDER address
+    value: "BRO SCIENCE INSTITUTE",
+    note: "Campus location",
   },
 ];
 
@@ -59,9 +60,7 @@ export default function ContactPage() {
 
             <Reveal delay={0.1}>
               <GlassCard className="overflow-hidden p-0">
-                <div className="flex aspect-[16/10] items-center justify-center bg-[var(--surface)]">
-                  <p className="text-sm text-[var(--muted)]">Map placeholder — centre location</p>
-                </div>
+                <CampusMap className="aspect-[16/10] h-auto w-full" />
               </GlassCard>
             </Reveal>
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import GlassCard from "@/components/ui/GlassCard";
+import CampusMap from "./CampusMap";
 import { cn } from "@/lib/utils";
 
 const footerLinks = {
@@ -14,7 +15,7 @@ const footerLinks = {
     { label: "Doubts", href: "/doubts" },
     { label: "Contact Us", href: "/contact" },
     { label: "Book Counselling", href: "/contact" },
-    { label: "FAQs", href: "/contact#faqs" },
+    { label: "FAQs", href: "/#faqs" },
   ],
 };
 
@@ -90,11 +91,33 @@ export default function Footer({ className }) {
                 +91 98765 43210
               </li>
               <li>
-                <span className="block text-[var(--foreground)]">Location</span>
-                New Delhi, India
+                <span className="block text-[var(--foreground)]">Campus</span>
+                BRO SCIENCE INSTITUTE
               </li>
             </ul>
           </GlassCard>
+        </div>
+
+        <div className="mt-14">
+          <div className="mb-4 flex items-end justify-between gap-4">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--brand-gold)]">
+                Visit us
+              </p>
+              <h3 className="mt-2 font-display text-2xl text-[var(--foreground)]">
+                BRO SCIENCE INSTITUTE
+              </h3>
+            </div>
+            <Link
+              href="/contact"
+              className="editorial-link hidden text-sm text-[var(--muted)] sm:inline-flex"
+            >
+              Get directions
+            </Link>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-[var(--border)] shadow-[0_18px_40px_rgba(10,10,10,0.06)]">
+            <CampusMap className="h-64 w-full sm:h-80" />
+          </div>
         </div>
 
         <div className="mt-14 flex flex-col gap-4 border-t border-[var(--border)] pt-8 sm:flex-row sm:items-center sm:justify-between">
