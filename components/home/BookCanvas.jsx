@@ -60,9 +60,9 @@ export default function BookCanvas({ animationRefs, onReady, className }) {
     >
       <Canvas
         dpr={[1, 2]}
-        camera={{ position: [0.68, 0.05, 3.0], fov: 32, near: 0.1, far: 40 }}
+        camera={{ position: [1.35, 0.45, 3.2], fov: 35, near: 0.1, far: 40 }}
         onCreated={({ camera, gl }) => {
-          camera.lookAt(0, 0.02, 0);
+          camera.lookAt(0, 0, 0);
           gl.domElement.style.touchAction = "manipulation";
         }}
         gl={{
