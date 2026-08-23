@@ -5,11 +5,18 @@ import { useFrame } from "@react-three/fiber";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { prefersReducedMotion } from "@/lib/gsap";
+import { createSpreadPair } from "@/lib/bookTextures";
 
-const MODEL_PATH  = "/models/broscience-book.glb?v=11";
-const TARGET_SIZE = 1.82;
+const MODEL_PATH  = "/models/broscience-book.glb?v=14";
+// Sized so the fully-open spread (2 page widths) fills the frame without clipping.
+const TARGET_SIZE = 1.9;
 
-// Gentle idle rotation limits
+// Closed state: a gentle three-quarter view of the cover.
+const CLOSED_ROT = { x: 0.05, y: -0.13, z: 0.015 };
+// Open state: laid back so the flat spread is read from above, square to camera.
+// -0.50rad plus the camera's own downward look gives the reference's ~35° angle.
+const OPEN_ROT   = { x: -0.50, y: 0, z: 0 };
+
 const MAX_ROT = {
   x: THREE.MathUtils.degToRad(2.5),
   y: THREE.MathUtils.degToRad(3.5),
@@ -20,10 +27,10 @@ function smoothstep(t) {
   return c * c * (3 - 2 * c);
 }
 
-// Prepare: centre the model and set material properties.
+// Centre the model, record the spine offset, and normalise materials.
 function prepare(root) {
   root.updateMatrixWorld(true);
-  const box = new THREE.Box3().setFromObject(root);
+  const box    = new THREE.Box3().setFromObject(root);
   const size   = new THREE.Vector3();
   const center = new THREE.Vector3();
   box.getSize(size);
@@ -31,8 +38,12 @@ function prepare(root) {
 
   const scale = TARGET_SIZE / Math.max(size.x, size.y, size.z, 1);
   root.scale.setScalar(scale);
-  // Centre on bounding-box centre, shift right for open-cover room, lift slightly.
-  root.position.set(-center.x * scale + 0.3, -center.y * scale + 0.14, -center.z * scale);
+  root.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
+
+  // The spine sits at local x=0, so after centring it lands here. Shifting the
+  // group by this amount when open puts the spine — and therefore the gutter of
+  // the open spread — dead centre in frame.
+  root.userData.spineShift = center.x * scale;
 
   root.traverse((child) => {
     if (!child.isMesh || !child.material) return;
@@ -41,15 +52,15 @@ function prepare(root) {
       m.side = THREE.DoubleSide;
       const id = `${child.name} ${m.name}`.toLowerCase();
 
-      if (id.includes("cover") || id.includes("cloth") || id.includes("maroon") || id.includes("endpaper")) {
-        m.roughness  = Math.min(m.roughness  ?? 0.5,  0.42);
-        m.metalness  = Math.min(m.metalness  ?? 0.05, 0.05);
+      if (id.includes("cover") || id.includes("cloth") || id.includes("endpaper")) {
+        m.roughness   = Math.min(m.roughness ?? 0.5, 0.45);
+        m.metalness   = Math.min(m.metalness ?? 0.05, 0.05);
         m.transparent = false;
         m.depthWrite  = true;
       }
 
-      if (id.includes("page") || id.includes("spread") || id.includes("paper")) {
-        m.roughness   = 0.88;
+      if (id.includes("page") || id.includes("paper") || id.includes("edge") || id.includes("block")) {
+        m.roughness   = 0.9;
         m.metalness   = 0;
         m.transparent = false;
         m.opacity     = 1;
@@ -57,8 +68,12 @@ function prepare(root) {
       }
 
       if (id.includes("gold") || id.includes("foil")) {
-        m.roughness = Math.min(m.roughness ?? 0.3, 0.26);
-        m.metalness = Math.max(m.metalness ?? 0.9, 0.88);
+        m.color.setRGB(0.92, 0.7, 0.18);
+        m.roughness = 0.36;
+        m.metalness = 0.68;
+        if (!m.emissive) m.emissive = new THREE.Color();
+        m.emissive.setRGB(0.07, 0.048, 0.007);
+        m.emissiveIntensity = 1;
       }
 
       m.needsUpdate = true;
@@ -66,35 +81,35 @@ function prepare(root) {
   });
 }
 
-// Apply canvas-generated spread textures to the left / right pages.
+// Swap the baked page textures for the canvas-drawn spread halves.
+// MeshBasicMaterial (unlit) is deliberate: once the book is open the left page
+// shows its BACK face to the camera, which no directional light reaches.
 function applySpreadTextures(root) {
-  import("@/lib/bookTextures").then(({ createSpreadCanvas, SPREAD_COPY }) => {
-    root.traverse((child) => {
-      if (!child.isMesh || !child.material) return;
-      const name = child.name;
-      let data = null;
+  const { left, right } = createSpreadPair();
 
-      if (name === "Book_LeftPage")  data = SPREAD_COPY.left;
-      if (name === "Book_RightPage") data = SPREAD_COPY.right;
-      if (!data) return;
+  root.traverse((child) => {
+    if (!child.isMesh) return;
+    const canvas =
+      child.name === "Book_LeftPage"  ? left  :
+      child.name === "Book_RightPage" ? right : null;
+    if (!canvas) return;
 
-      const cvs     = createSpreadCanvas(data);
-      const texture = new THREE.CanvasTexture(cvs);
-      texture.flipY = false;          // GLTF convention
-      texture.needsUpdate = true;
+    const texture = new THREE.CanvasTexture(canvas);
+    // Matches the glTF UV convention (V=0 at top) used by the exported mesh.
+    texture.flipY       = false;
+    texture.anisotropy  = 4;
+    texture.colorSpace  = THREE.SRGBColorSpace;
+    texture.needsUpdate = true;
 
-      const mats = Array.isArray(child.material) ? child.material : [child.material];
-      mats.forEach((m) => {
-        m.map        = texture;
-        m.roughness  = 0.88;
-        m.metalness  = 0;
-        m.transparent = false;
-        m.depthWrite  = true;
-        m.needsUpdate = true;
-      });
+    child.material = new THREE.MeshBasicMaterial({
+      map:         texture,
+      side:        THREE.DoubleSide,
+      transparent: false,
+      depthWrite:  true,
+      // The page art is hand-drawn to final values; the renderer's default ACES
+      // curve would desaturate the warm cream into khaki, so opt out of it.
+      toneMapped:  false,
     });
-  }).catch(() => {
-    /* bookTextures not critical — plain GLB material still shows */
   });
 }
 
@@ -115,7 +130,6 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
 
   const { actions, mixer } = useAnimations(animations, clone);
 
-  // Apply canvas spread textures once the clone is ready.
   useEffect(() => {
     if (clone) applySpreadTextures(clone);
   }, [clone]);
@@ -126,14 +140,13 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
     return () => { animationRefs.current.book = null; };
   }, [animationRefs, onReady]);
 
-  // Bind all GLB animations in scrub mode.
   useEffect(() => {
     if (bound.current) return;
     Object.values(actions).forEach((action) => {
       if (!action) return;
       action.reset();
       action.play();
-      action.paused          = true;
+      action.paused            = true;
       action.clampWhenFinished = true;
       action.setLoop(THREE.LoopOnce, 1);
       action.time    = 0;
@@ -151,8 +164,6 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
     const hovered = Boolean(hoverRef?.current);
     const mouse   = mouseRef?.current ?? { x: 0, y: 0 };
 
-    // Advance / retreat animation progress.
-    // lambda=1.2 → ~70% open after 1 s of hover, ~91% after 2 s — clearly visible.
     const target = reduced ? 0 : hovered ? 1 : 0;
     progress.current = THREE.MathUtils.damp(
       progress.current, target, reduced ? 6 : 1.2, delta,
@@ -161,20 +172,21 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
 
     const playhead = smoothstep(progress.current);
 
-    // Scrub every GLB action.
+    // Scrub every baked GLB action to the same playhead.
     Object.values(actions).forEach((action) => {
       if (!action?.getClip()) return;
-      const dur  = Math.max(action.getClip().duration, 0.001);
+      const dur = Math.max(action.getClip().duration, 0.001);
       action.paused  = true;
       action.enabled = true;
       action.weight  = 1;
-      const raw  = playhead * dur;
-      action.time = playhead >= 1 ? Math.max(dur - 0.001, 0) : Math.min(raw, dur - 0.001);
+      action.time = playhead >= 1
+        ? Math.max(dur - 0.001, 0)
+        : Math.min(playhead * dur, dur - 0.001);
     });
     mixer.update(0);
 
-    // Cursor follow — gentler as book opens.
-    const follow = reduced ? 0 : THREE.MathUtils.lerp(1, 0.25, playhead);
+    // Cursor parallax, damped right down once the spread is being read.
+    const follow = reduced ? 0 : THREE.MathUtils.lerp(1, 0.12, playhead);
     mouseRot.current.x = THREE.MathUtils.damp(
       mouseRot.current.x, -mouse.y * MAX_ROT.x * follow, 1.2, delta,
     );
@@ -182,18 +194,17 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
       mouseRot.current.y,  mouse.x * MAX_ROT.y * follow, 1.2, delta,
     );
 
-    // Gentle idle float.
-    floatPhase.current += delta * (reduced ? 0 : 0.20);
-    const idleY = reduced ? 0 : Math.sin(floatPhase.current) * 0.007;
+    // Idle float settles as the book lies open.
+    floatPhase.current += delta * (reduced ? 0 : 0.2);
+    const floatAmp = THREE.MathUtils.lerp(0.008, 0.002, playhead);
+    const idleY    = reduced ? 0 : Math.sin(floatPhase.current) * floatAmp;
 
-    // When the book opens, shift the wrapper slightly to the right so the
-    // swinging cover (which extends left) stays within the visible frame.
-    const openShift = THREE.MathUtils.lerp(0, 0.10, playhead);
-
-    wrap.rotation.x = 0.04 + mouseRot.current.x;
-    wrap.rotation.y = -0.06 + mouseRot.current.y;
-    wrap.rotation.z = mouseRot.current.y * 0.025;
-    wrap.position.x = openShift;
+    // Tilt back into the reference's elevated read angle, and slide the spine
+    // to centre so the open spread is symmetric in frame.
+    wrap.rotation.x = THREE.MathUtils.lerp(CLOSED_ROT.x, OPEN_ROT.x, playhead) + mouseRot.current.x;
+    wrap.rotation.y = THREE.MathUtils.lerp(CLOSED_ROT.y, OPEN_ROT.y, playhead) + mouseRot.current.y;
+    wrap.rotation.z = THREE.MathUtils.lerp(CLOSED_ROT.z, OPEN_ROT.z, playhead);
+    wrap.position.x = THREE.MathUtils.lerp(0, clone.userData.spineShift ?? 0, playhead);
     wrap.position.y = idleY;
   });
 

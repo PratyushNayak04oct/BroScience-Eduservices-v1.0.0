@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useRef } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
+import * as THREE from "three";
 import BookModel from "./BookModel";
 
 if (typeof window !== "undefined" && !window.__broscienceFilteredThreeWarnings) {
@@ -14,12 +15,31 @@ if (typeof window !== "undefined" && !window.__broscienceFilteredThreeWarnings) 
   };
 }
 
+// World-space extents that must stay in frame: the open spread is ~2.62 wide,
+// the closed book ~1.9 tall. Small margins keep the book dominant in its column.
+const NEEDED_WIDTH  = 2.8;
+const NEEDED_HEIGHT = 2.15;
+const CAM_DIST      = 4.7;
+
 function CameraBridge({ animationRefs }) {
-  const { camera } = useThree();
+  const { camera, size } = useThree();
+
+  // Three's fov is vertical, so a narrow container would crop the wide open
+  // spread. Derive the fov from the aspect ratio to guarantee the horizontal
+  // field, with a floor so wide containers don't push the book too far away.
+  useEffect(() => {
+    const aspect = size.width / Math.max(size.height, 1);
+    const byWidth  = 2 * Math.atan(NEEDED_WIDTH  / (2 * CAM_DIST * Math.max(aspect, 0.01)));
+    const byHeight = 2 * Math.atan(NEEDED_HEIGHT / (2 * CAM_DIST));
+    camera.fov = THREE.MathUtils.radToDeg(Math.max(byWidth, byHeight));
+    camera.updateProjectionMatrix();
+  }, [camera, size.width, size.height]);
 
   useEffect(() => {
     animationRefs.current.camera = camera;
-    camera.lookAt(0, 0, 0);
+    // Slight downward look. Combined with the book's own -24° tilt when open,
+    // this gives the ~30° elevated read angle of the reference composition.
+    camera.lookAt(0, 0.02, 0);
     return () => {
       animationRefs.current.camera = null;
     };
@@ -32,10 +52,14 @@ function SceneContent({ animationRefs, onReady, hoverRef, mouseRef }) {
   return (
     <>
       <CameraBridge animationRefs={animationRefs} />
-      <hemisphereLight args={["#fff4e4", "#3a1818", 0.75]} />
-      <ambientLight intensity={0.72} color="#fff6ea" />
-      <directionalLight position={[2.2, 2.8, 3.4]} intensity={2.4} color="#fff8ee" />
-      <directionalLight position={[-1.8, 1.2, 2.2]} intensity={0.65} color="#e6b640" />
+      {/* Page content is unlit, so these lights shape the cover, spine, page
+          blocks and the gold foil only. Key comes from above-front so it reads
+          on both the upright closed cover and the laid-back open spread. */}
+      <hemisphereLight args={["#fff6e8", "#2c1a14", 0.6]} />
+      <ambientLight intensity={0.55} color="#fff6ea" />
+      <directionalLight position={[0.6, 3.2, 3.6]} intensity={2.2} color="#fff8ee" />
+      <directionalLight position={[-2.2, -0.6, 3.0]} intensity={0.8} color="#fff0e0" />
+      <directionalLight position={[-1.0, 1.2, 2.6]} intensity={0.7} color="#f0c040" />
       <BookModel
         animationRefs={animationRefs}
         onReady={onReady}
@@ -62,9 +86,9 @@ export function isWebGLAvailable() {
 export default function BookCanvas({ animationRefs, onReady, className }) {
   const hoverRef = useRef(false);
   const mouseRef = useRef({ x: 0, y: 0 });
-  // Camera: right + up offset so the opening cover stays in frame; FOV 32.
+  // Elevated and centred; CameraBridge refines the fov from the container aspect.
   const camera = useMemo(
-    () => ({ position: [0.12, -0.04, 5.0], fov: 32, near: 0.1, far: 40 }),
+    () => ({ position: [0, 0.5, CAM_DIST], fov: 36, near: 0.1, far: 40 }),
     []
   );
   const gl = useMemo(

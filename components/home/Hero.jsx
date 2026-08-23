@@ -157,7 +157,9 @@ export default function Hero() {
           </p>
         </div>
 
-        <div className="relative z-10 isolate flex h-[min(72vw,520px)] w-full items-center justify-center overflow-visible lg:h-[min(72vh,620px)]">
+        {/* Height kept close to the open spread's aspect so the book fills the
+            column instead of floating in dead vertical space. */}
+        <div className="relative z-10 isolate flex h-[min(66vw,440px)] w-full items-center justify-center overflow-visible lg:h-[min(54vh,470px)]">
           <div className="glass-orb pointer-events-none absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
           {canRenderWebGL === null || (useCanvas && !sceneReady) ? (
             <BookLoading className="absolute inset-0 rounded-sm" />
