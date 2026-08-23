@@ -103,7 +103,7 @@ html.bs-loading body {
   opacity: 1;
   max-width: 100%;
   overflow-x: hidden;
-  animation: bs-app-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: bs-app-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes bs-app-in {
@@ -397,8 +397,17 @@ video {
 
 /* ─── Route transition overlay ─── */
 .bs-route-overlay {
-  opacity: 0;
-  visibility: hidden;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+
+.bs-route-overlay.is-active {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto;
+  transition-duration: 0s;
 }
 
 .route-grid {
@@ -407,48 +416,26 @@ video {
     linear-gradient(90deg, rgba(212, 160, 23, 0.08) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(circle at 50% 46%, #000 12%, transparent 72%);
-  animation: route-grid-drift 10s linear infinite;
-}
-
-.route-sweep {
-  background: linear-gradient(
-    110deg,
-    transparent 32%,
-    rgba(212, 160, 23, 0.12) 50%,
-    transparent 68%
-  );
-  background-size: 220% 100%;
-  animation: route-sweep 1.8s ease-in-out infinite;
 }
 
 .route-glow {
   background: radial-gradient(circle, rgba(212, 160, 23, 0.24), rgba(107, 20, 32, 0.12) 42%, transparent 70%);
+}
+
+.bs-route-overlay.is-active .route-grid {
+  animation: route-grid-drift 10s linear infinite;
+}
+
+.bs-route-overlay.is-active .route-glow {
   animation: route-glow-pulse 1.7s ease-in-out infinite;
 }
 
-.route-ring {
+.bs-route-overlay.is-active .route-ring {
   animation: route-spin 2.8s linear infinite;
 }
 
-.route-orbit {
+.bs-route-overlay.is-active .route-orbit {
   animation: route-spin-rev 1.7s linear infinite;
-}
-
-.route-dot {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-radius: 999px;
-  background: #f0d060;
-  box-shadow: 0 0 10px rgba(240, 208, 96, 0.8);
-}
-
-.route-dot-a {
-  animation: route-orbit-a 2.4s linear infinite;
-}
-
-.route-dot-b {
-  animation: route-orbit-b 3.2s linear infinite;
 }
 
 @keyframes route-spin {
@@ -469,20 +456,6 @@ video {
   }
 }
 
-@keyframes route-sweep {
-  0% {
-    background-position: 120% 0;
-    opacity: 0.15;
-  }
-  50% {
-    opacity: 0.45;
-  }
-  100% {
-    background-position: -20% 0;
-    opacity: 0.15;
-  }
-}
-
 @keyframes route-glow-pulse {
   0%,
   100% {
@@ -495,32 +468,11 @@ video {
   }
 }
 
-@keyframes route-orbit-a {
-  from {
-    transform: rotate(0deg) translateX(52px) rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg) translateX(52px) rotate(-360deg);
-  }
-}
-
-@keyframes route-orbit-b {
-  from {
-    transform: rotate(180deg) translateX(38px) rotate(-180deg);
-  }
-  to {
-    transform: rotate(540deg) translateX(38px) rotate(-540deg);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .route-grid,
-  .route-sweep,
-  .route-glow,
-  .route-ring,
-  .route-orbit,
-  .route-dot-a,
-  .route-dot-b {
+  .bs-route-overlay.is-active .route-grid,
+  .bs-route-overlay.is-active .route-glow,
+  .bs-route-overlay.is-active .route-ring,
+  .bs-route-overlay.is-active .route-orbit {
     animation: none;
   }
 }

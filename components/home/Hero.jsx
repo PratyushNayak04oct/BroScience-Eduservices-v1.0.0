@@ -213,14 +213,14 @@ export default function Hero() {
             {hasEntered && (canRenderWebGL === null || (useCanvas && !sceneReady)) ? (
               <BookLoading className="pointer-events-none absolute inset-0 rounded-sm" />
             ) : null}
-            {useCanvas ? (
+            {hasEntered && useCanvas ? (
               <BookCanvas
                 animationRefs={animationRefs}
                 onReady={handleSceneReady}
                 hoverRef={bookHoverRef}
                 className="absolute inset-0 z-10 h-full w-full"
               />
-            ) : canRenderWebGL === false ? (
+            ) : hasEntered && canRenderWebGL === false ? (
               <BookFallback
                 animationRefs={animationRefs}
                 className="absolute inset-0 h-full w-full"

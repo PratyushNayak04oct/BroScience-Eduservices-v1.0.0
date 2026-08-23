@@ -35,10 +35,6 @@ function ArrowIcon({ className }) {
   );
 }
 
-function isModifiedClick(event) {
-  return event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0;
-}
-
 export default function Button({
   children,
   variant = "primary",
@@ -91,21 +87,6 @@ export default function Button({
     </>
   );
 
-  const handleClick = (event) => {
-    onClick?.(event);
-    if (!href || event.defaultPrevented || isModifiedClick(event) || disabled) return;
-
-    const destination = new URL(href, window.location.href);
-    if (destination.origin !== window.location.origin) return;
-
-    const startPath = window.location.pathname;
-    window.setTimeout(() => {
-      if (window.location.pathname === startPath && destination.pathname !== startPath) {
-        window.location.assign(destination.pathname + destination.search + destination.hash);
-      }
-    }, 350);
-  };
-
   const magnet = (node) => (
     <span
       ref={magnetRef}
@@ -119,7 +100,7 @@ export default function Button({
 
   if (href) {
     return magnet(
-      <Link href={href} className={classes} onClick={handleClick}>
+      <Link href={href} className={classes} onClick={onClick}>
         {content}
       </Link>
     );

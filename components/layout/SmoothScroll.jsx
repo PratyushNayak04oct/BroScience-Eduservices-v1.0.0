@@ -6,14 +6,16 @@ import Lenis from "lenis";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "@/lib/gsap";
+import { useLoader } from "@/components/loading/LoaderProvider";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function SmoothScroll({ children }) {
   const pathname = usePathname();
+  const { hasEntered } = useLoader();
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    if (!hasEntered || prefersReducedMotion()) return;
 
     const lenis = new Lenis({
       duration: 1.15,
@@ -31,7 +33,7 @@ export default function SmoothScroll({ children }) {
       gsap.ticker.remove(ticker);
       lenis.destroy();
     };
-  }, []);
+  }, [hasEntered]);
 
   useEffect(() => {
     const id = requestAnimationFrame(() => ScrollTrigger.refresh());

@@ -5,14 +5,14 @@ import ScientificCanvas from "./ScientificCanvas";
 import BrandReveal from "./BrandReveal";
 import LoadingProgress from "./LoadingProgress";
 import { createLoaderTimeline } from "@/lib/loading/loaderTimeline";
-import { startAssetPreload, isBookReady, onBookReady } from "@/lib/loading/loaderAssets";
+import { startAssetPreload } from "@/lib/loading/loaderAssets";
 import { getLoaderMode, markIntroSeen } from "@/lib/loading/loaderStore";
 import { statusForStory, getPhaseAlphas } from "@/lib/loading/loaderProgress";
 import { gsap, initGsap, prefersReducedMotion } from "@/lib/gsap";
 
-const HARD_TIMEOUT = 22000;
+const HARD_TIMEOUT = 16000;
 
-export default function BroScienceLoader({ waitForBook = false, onRevealSite, onComplete }) {
+export default function BroScienceLoader({ onRevealSite, onComplete }) {
   const overlayRef = useRef(null);
   const storyRef = useRef(0);
   const timelineRef = useRef(null);
@@ -34,20 +34,16 @@ export default function BroScienceLoader({ waitForBook = false, onRevealSite, on
     const state = { story: 0 };
 
     const tryReady = () => {
-      const bookOk = !waitForBook || isBookReady() || resolvedMode !== "cinematic";
-      if (assetsDoneRef.current && bookOk) {
-        readyRef.current = true;
-        setProgress((value) => Math.max(value, 1));
-        if (timelineRef.current?.paused()) timelineRef.current.play();
-        if (resolvedMode === "reduced") exit();
-      }
+      if (!assetsDoneRef.current) return;
+      readyRef.current = true;
+      setProgress((value) => Math.max(value, 1));
+      if (resolvedMode === "reduced") exit();
     };
 
     const timeline = createLoaderTimeline({
       state,
       mode: resolvedMode,
       onPhase: (phase) => {
-        if (phase === "awaiting" && !readyRef.current) timeline.pause();
         if (phase === "ready") exit();
       },
     });
@@ -66,8 +62,6 @@ export default function BroScienceLoader({ waitForBook = false, onRevealSite, on
       }
     });
 
-    const stopBook = onBookReady(() => tryReady());
-
     assets.then(() => {
       assetsDoneRef.current = true;
       tryReady();
@@ -76,16 +70,14 @@ export default function BroScienceLoader({ waitForBook = false, onRevealSite, on
     const failsafe = window.setTimeout(() => {
       assetsDoneRef.current = true;
       readyRef.current = true;
-      timeline.play();
-      if (resolvedMode === "reduced") exit();
+      exit();
     }, HARD_TIMEOUT);
 
     return () => {
       window.clearTimeout(failsafe);
-      stopBook();
       timeline.kill();
     };
-  }, [waitForBook]);
+  }, []);
 
   const exit = () => {
     if (exitingRef.current) return;
@@ -100,7 +92,7 @@ export default function BroScienceLoader({ waitForBook = false, onRevealSite, on
     gsap.to(node, {
       yPercent: prefersReducedMotion() ? 0 : -6,
       opacity: 0,
-      duration: prefersReducedMotion() ? 0.35 : 1,
+      duration: prefersReducedMotion() ? 0.2 : 0.45,
       ease: "power3.inOut",
       onComplete: () => {
         document.documentElement.classList.remove("bs-loading");
