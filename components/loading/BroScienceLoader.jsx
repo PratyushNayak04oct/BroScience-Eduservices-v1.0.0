@@ -22,33 +22,30 @@ export default function BroScienceLoader({ waitForBook = false, onRevealSite, on
   const [story, setStory] = useState(0);
   const [progress, setProgress] = useState(0);
   const [mode, setMode] = useState("cinematic");
-  const [booted, setBooted] = useState(false);
 
   useEffect(() => {
     document.getElementById("bs-boot-overlay")?.remove();
     document.documentElement.classList.add("bs-loading");
-    setMode(getLoaderMode());
-    setBooted(true);
-  }, []);
 
-  useEffect(() => {
-    if (!booted) return;
+    const resolvedMode = getLoaderMode();
+    setMode(resolvedMode);
+
     initGsap();
     const state = { story: 0 };
 
     const tryReady = () => {
-      const bookOk = !waitForBook || isBookReady() || mode !== "cinematic";
+      const bookOk = !waitForBook || isBookReady() || resolvedMode !== "cinematic";
       if (assetsDoneRef.current && bookOk) {
         readyRef.current = true;
         setProgress((value) => Math.max(value, 1));
         if (timelineRef.current?.paused()) timelineRef.current.play();
-        if (mode === "reduced") exit();
+        if (resolvedMode === "reduced") exit();
       }
     };
 
     const timeline = createLoaderTimeline({
       state,
-      mode,
+      mode: resolvedMode,
       onPhase: (phase) => {
         if (phase === "awaiting" && !readyRef.current) timeline.pause();
         if (phase === "ready") exit();
@@ -80,7 +77,7 @@ export default function BroScienceLoader({ waitForBook = false, onRevealSite, on
       assetsDoneRef.current = true;
       readyRef.current = true;
       timeline.play();
-      if (mode === "reduced") exit();
+      if (resolvedMode === "reduced") exit();
     }, HARD_TIMEOUT);
 
     return () => {
@@ -88,7 +85,7 @@ export default function BroScienceLoader({ waitForBook = false, onRevealSite, on
       stopBook();
       timeline.kill();
     };
-  }, [booted, mode, waitForBook]);
+  }, [waitForBook]);
 
   const exit = () => {
     if (exitingRef.current) return;
