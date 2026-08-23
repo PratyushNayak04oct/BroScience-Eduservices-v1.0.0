@@ -32,6 +32,7 @@ export default function Hero() {
 
   const [canRenderWebGL, setCanRenderWebGL] = useState(null);
   const [sceneReady, setSceneReady] = useState(false);
+  const bookHoverRef = useRef(false);
 
   const handleSceneReady = useCallback(() => setSceneReady(true), []);
 
@@ -161,7 +162,15 @@ export default function Hero() {
         </div>
 
         {/* Scene is larger than the book so opening pages stay inside the canvas. */}
-        <div className="hero-scene">
+        <div
+          className="hero-scene"
+          onPointerEnter={() => {
+            bookHoverRef.current = true;
+          }}
+          onPointerLeave={() => {
+            bookHoverRef.current = false;
+          }}
+        >
           <div className="book-aura" aria-hidden="true" />
           <div className="book-aura-core" aria-hidden="true" />
           {canRenderWebGL === null || (useCanvas && !sceneReady) ? (
@@ -171,7 +180,8 @@ export default function Hero() {
             <BookCanvas
               animationRefs={animationRefs}
               onReady={handleSceneReady}
-              className="absolute inset-0 h-full w-full"
+              hoverRef={bookHoverRef}
+              className="absolute inset-0 z-10 h-full w-full"
             />
           ) : canRenderWebGL === false ? (
             <BookFallback

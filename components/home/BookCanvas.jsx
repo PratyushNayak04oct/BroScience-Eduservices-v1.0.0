@@ -85,8 +85,9 @@ export function isWebGLAvailable() {
   }
 }
 
-export default function BookCanvas({ animationRefs, onReady, className }) {
-  const hoverRef = useRef(false);
+export default function BookCanvas({ animationRefs, onReady, hoverRef: hoverRefProp, className }) {
+  const hoverFallback = useRef(false);
+  const hoverRef = hoverRefProp ?? hoverFallback;
   const mouseRef = useRef({ x: 0, y: 0 });
   const wrapperRef = useRef(null);
   const [contextKey, setContextKey] = useState(0);

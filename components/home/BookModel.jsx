@@ -114,7 +114,10 @@ function applyPrintedLeaf(child, texture, contentOnBack) {
     depthWrite: true,
   });
 
-  if (child.userData.paperFace) return;
+  [...child.children]
+    .filter((c) => c.name.includes("PaperFace"))
+    .forEach((c) => child.remove(c));
+
   const paperFace = new THREE.Mesh(
     child.geometry,
     new THREE.MeshBasicMaterial({
@@ -146,9 +149,13 @@ function applySpreadTextures(root, logoImage) {
       return;
     }
 
+    // Do not match LeftPage/RightPage or their paper-face children — those
+    // carry the printed spread. An earlier /Paper/ regex overwrote them with
+    // blank cream, which is why the open pages lost their text.
     const isPaperStack =
       child.name.startsWith("Book_PageLayer_") ||
-      /Block|Edge|Head|Tail|Paper|PageIvory/i.test(child.name);
+      (/(Block|Edge|Head|Tail|PageIvory)/i.test(child.name) &&
+        !/LeftPage|RightPage|PaperFace/i.test(child.name));
     if (isPaperStack) {
       child.material = new THREE.MeshBasicMaterial({
         map:        child.name.startsWith("Book_PageLayer_") ? paperTexture : null,
@@ -166,7 +173,6 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
   const progress   = useRef(0);
   const floatPhase = useRef(0);
   const mouseRot   = useRef({ x: 0, y: 0 });
-  const bound      = useRef(false);
 
   const { scene, animations } = useGLTF(MODEL_PATH);
 
@@ -193,10 +199,12 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
     return () => { animationRefs.current.book = null; };
   }, [animationRefs, onReady]);
 
+  // Re-bind whenever `actions` is a new object. Fast Refresh keeps useRef
+  // values across book edits, so a one-shot "already bound" flag would skip
+  // play() on the new clips and the open animation would go dead.
   useEffect(() => {
-    if (bound.current) return;
-    Object.values(actions).forEach((action) => {
-      if (!action) return;
+    const clips = Object.values(actions).filter(Boolean);
+    clips.forEach((action) => {
       action.reset();
       action.play();
       action.paused            = true;
@@ -206,7 +214,11 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
       action.enabled = true;
       action.weight  = 1;
     });
-    bound.current = true;
+    return () => {
+      clips.forEach((action) => {
+        action.stop();
+      });
+    };
   }, [actions]);
 
   useFrame((_, delta) => {
@@ -219,7 +231,7 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
 
     const target = reduced ? 0 : hovered ? 1 : 0;
     progress.current = THREE.MathUtils.damp(
-      progress.current, target, reduced ? 6 : 1.2, delta,
+      progress.current, target, reduced ? 6 : 2.4, delta,
     );
     if (Math.abs(progress.current - target) < 0.002) progress.current = target;
 
