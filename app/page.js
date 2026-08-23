@@ -13,7 +13,7 @@ import CounsellingCTA from "@/components/home/CounsellingCTA";
 import FAQSection from "@/components/home/FAQSection";
 
 export const metadata = {
-  title: "BroScience Eduservices — Premium Education for Ambitious Learners",
+  title: "BroScience Eduservices | Home",
   description:
     "Structured courses, expert faculty, doubt support, and mentorship for Class 7 through JEE, NEET, and board excellence.",
 };
