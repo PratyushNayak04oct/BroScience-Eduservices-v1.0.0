@@ -7,7 +7,7 @@ import * as THREE from "three";
 import { prefersReducedMotion } from "@/lib/gsap";
 import { createSpreadPair } from "@/lib/bookTextures";
 
-const MODEL_PATH  = "/models/broscience-book.glb?v=14";
+const MODEL_PATH  = "/models/broscience-book.glb?v=16";
 // Sized so the fully-open spread (2 page widths) fills the frame without clipping.
 const TARGET_SIZE = 1.9;
 
