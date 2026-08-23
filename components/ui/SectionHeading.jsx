@@ -14,7 +14,7 @@ export default function SectionHeading({
   };
 
   return (
-    <header className={cn("flex max-w-3xl flex-col gap-4", alignments[align], className)}>
+    <header className={cn("flex max-w-3xl flex-col gap-6", alignments[align], className)}>
       {(number || eyebrow) && (
         <div className="flex items-center gap-4">
           {number && (
@@ -34,7 +34,7 @@ export default function SectionHeading({
       )}
 
       {title && (
-        <h2 className="font-display text-3xl font-medium leading-tight tracking-tight text-[var(--foreground)] sm:text-4xl lg:text-5xl">
+        <h2 className="font-display text-[clamp(2.25rem,4.4vw,3.75rem)] font-medium leading-[1.12] tracking-tight text-[var(--foreground)]">
           {title}
         </h2>
       )}

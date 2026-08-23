@@ -7,7 +7,7 @@ export default function CounsellingCTA() {
     <section className="relative py-24 sm:py-32 lg:py-40">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <Reveal>
-          <div className="glass-panel relative overflow-hidden rounded-3xl px-8 py-16 sm:px-12 sm:py-20 lg:px-20 lg:py-24">
+          <div className="glass-panel relative overflow-hidden rounded-sm px-8 py-20 sm:px-12 sm:py-24 lg:px-20 lg:py-28">
             {/* Atmospheric accents */}
             <div
               className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[var(--brand-gold)]/10 blur-3xl"

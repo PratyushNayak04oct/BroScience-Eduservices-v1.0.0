@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 const variants = {
   primary:
-    "bg-[var(--brand-gold)] text-[var(--brand-black)] border border-[var(--brand-gold)] hover:bg-[#d4b45c] hover:border-[#d4b45c] shadow-[0_8px_24px_rgba(201,168,77,0.22)]",
+    "bg-[var(--brand-gold)] text-[var(--brand-black)] border border-[var(--brand-gold)] hover:bg-[#e0b31f] hover:border-[#e0b31f] shadow-[0_8px_24px_rgba(212,160,23,0.2)]",
   secondary:
     "bg-[var(--surface)]/70 text-[var(--foreground)] border border-[var(--border-strong)] hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)] backdrop-blur-md",
   maroon:

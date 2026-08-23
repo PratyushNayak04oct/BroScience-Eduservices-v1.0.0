@@ -118,8 +118,9 @@ export default function StatsSection() {
         <SectionHeading
           number="07"
           eyebrow="The Proof"
-          title="Numbers that reflect real outcomes."
-          className="mb-16 lg:mb-20"
+          title="Figures we will replace with verified outcomes."
+          description="The numbers below are placeholders for layout. They are not institutional claims."
+          className="mb-16 lg:mb-24"
         />
 
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">

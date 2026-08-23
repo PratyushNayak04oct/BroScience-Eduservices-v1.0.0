@@ -10,7 +10,7 @@ export default function GlassCard({
   return (
     <Component
       className={cn(
-        "glass-panel relative overflow-hidden rounded-2xl",
+        "glass-panel relative overflow-hidden rounded-sm",
         interactive &&
           "group/card cursor-pointer transition-transform duration-500 ease-out hover:-translate-y-1.5",
         className

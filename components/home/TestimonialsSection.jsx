@@ -16,9 +16,10 @@ export default function TestimonialsSection() {
 
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading
-          eyebrow="Voices"
+          eyebrow="The Voices"
           title="What students and parents say."
-          className="mb-14 lg:mb-16"
+          description="These quotes are sample copy for layout only — not verified testimonials."
+          className="mb-16 lg:mb-24"
         />
 
         <div

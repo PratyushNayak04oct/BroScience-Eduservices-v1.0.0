@@ -3,15 +3,15 @@
 /* ─── Brand tokens ─── */
 :root,
 [data-theme="light"] {
-  --brand-gold: #c9a84d;
-  --brand-maroon: #6b1d26;
+  --brand-gold: #d4a017;
+  --brand-maroon: #6b1420;
   --brand-black: #0a0a0a;
-  --brand-white: #faf7f2;
+  --brand-white: #f7f3ea;
 
-  --light-background: #faf7f2;
-  --light-surface: rgba(250, 247, 242, 0.72);
-  --light-text: #0a0a0a;
-  --light-muted: rgba(10, 10, 10, 0.62);
+  --light-background: #f7f3ea;
+  --light-surface: rgba(247, 243, 234, 0.74);
+  --light-text: #14110e;
+  --light-muted: rgba(20, 17, 14, 0.58);
 
   --background: var(--light-background);
   --foreground: var(--light-text);
@@ -134,7 +134,7 @@ body {
 }
 
 .glass-orb {
-  background: radial-gradient(circle, rgba(201, 168, 77, 0.2), transparent 68%);
+  background: radial-gradient(circle, rgba(212, 160, 23, 0.2), transparent 68%);
   filter: blur(10px);
 }
 
@@ -165,7 +165,7 @@ body {
 
 /* ─── Section spacing rhythm ─── */
 .section-spacing {
-  padding-block: clamp(4rem, 8vw, 7rem);
+  padding-block: clamp(6.5rem, 12vw, 10rem);
 }
 
 /* ─── Fine grain overlay utility ─── */

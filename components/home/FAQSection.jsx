@@ -110,10 +110,11 @@ export default function FAQSection() {
     <section ref={sectionRef} id="faqs" className="relative border-t border-[var(--border)] py-24 sm:py-32 lg:py-40">
       <div className="mx-auto max-w-3xl px-5 sm:px-8">
         <SectionHeading
-          eyebrow="FAQ"
+          number="11"
+          eyebrow="Questions"
           title="Common questions, clear answers."
           align="center"
-          className="mb-14"
+          className="mb-16 lg:mb-20"
         />
 
         <div>
