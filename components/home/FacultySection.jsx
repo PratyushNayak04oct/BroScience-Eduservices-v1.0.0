@@ -68,7 +68,7 @@ export default function FacultySection() {
             <p className="text-xs uppercase tracking-[0.24em] text-[var(--brand-gold)]">
               {featured.subjects.join(" · ")}
             </p>
-            <h3 className="mt-5 font-display text-[clamp(2.4rem,4vw,3.6rem)] leading-[1.05] text-[var(--foreground)]">
+            <h3 className="mt-5 break-words font-display text-[clamp(1.8rem,6vw,3.6rem)] leading-[1.05] text-[var(--foreground)]">
               {featured.name}
             </h3>
             <p className="mt-6 max-w-md text-lg leading-relaxed text-[var(--muted)]">
@@ -93,16 +93,15 @@ export default function FacultySection() {
                     <button
                       type="button"
                       onClick={() => setActiveId(member.id)}
-                      onMouseEnter={() => setActiveId(member.id)}
                       className={cn(
-                        "group/faculty relative flex w-full items-baseline justify-between gap-6 border-b border-[var(--border)] py-5 text-left transition-all duration-300",
+                        "group/faculty relative flex w-full min-w-0 items-baseline justify-between gap-3 border-b border-[var(--border)] py-5 text-left transition-all duration-300 sm:gap-6",
                         isActive
-                          ? "translate-x-1 text-[var(--foreground)]"
-                          : "text-[var(--muted)] hover:translate-x-1 hover:text-[var(--foreground)]"
+                          ? "text-[var(--foreground)]"
+                          : "text-[var(--muted)] hover:text-[var(--foreground)]"
                       )}
                     >
-                      <span className="font-display text-xl">{member.name}</span>
-                      <span className="text-xs uppercase tracking-[0.16em] text-[var(--brand-gold)]">
+                      <span className="min-w-0 truncate font-display text-lg sm:text-xl">{member.name}</span>
+                      <span className="shrink-0 text-[10px] uppercase tracking-[0.16em] text-[var(--brand-gold)] sm:text-xs">
                         {member.subjects[0]}
                       </span>
                     </button>

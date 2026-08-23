@@ -57,6 +57,8 @@
 html {
   scroll-behavior: auto;
   background: #070605;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 html.bs-loading,
@@ -93,10 +95,14 @@ html.bs-loading body {
 .bs-app-pending {
   opacity: 0;
   pointer-events: none;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .bs-app-visible {
   opacity: 1;
+  max-width: 100%;
+  overflow-x: hidden;
   animation: bs-app-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
@@ -111,16 +117,18 @@ html.bs-loading body {
   }
 }
 
-html.bs-cursor-on body,
-html.bs-cursor-on a,
-html.bs-cursor-on button {
-  cursor: none;
-}
+@media (hover: hover) and (pointer: fine) and (min-width: 1024px) {
+  html.bs-cursor-on body,
+  html.bs-cursor-on a,
+  html.bs-cursor-on button {
+    cursor: none;
+  }
 
-html.bs-cursor-on input,
-html.bs-cursor-on textarea,
-html.bs-cursor-on select {
-  cursor: text;
+  html.bs-cursor-on input,
+  html.bs-cursor-on textarea,
+  html.bs-cursor-on select {
+    cursor: text;
+  }
 }
 
 html.lenis,

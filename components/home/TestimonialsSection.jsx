@@ -29,7 +29,7 @@ export default function TestimonialsSection() {
           {testimonials.map((testimonial) => (
             <figure
               key={testimonial.id}
-              className="group w-[85vw] shrink-0 transition-transform duration-500 hover:-translate-y-1 sm:w-[28rem] lg:w-[32rem]"
+              className="group w-[min(20rem,calc(100vw-2.5rem))] shrink-0 transition-transform duration-500 hover:-translate-y-1 sm:w-[28rem] lg:w-[32rem]"
             >
               <blockquote>
                 <p className="text-2xl font-medium leading-snug tracking-tight text-[var(--foreground)] sm:text-3xl">

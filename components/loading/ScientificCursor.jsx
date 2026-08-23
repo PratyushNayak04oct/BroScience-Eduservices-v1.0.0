@@ -3,6 +3,17 @@
 import { useEffect, useRef, useState } from "react";
 import { prefersReducedMotion } from "@/lib/gsap";
 
+function isDesktopPointer() {
+  if (typeof window === "undefined") return false;
+  const hover = window.matchMedia("(hover: hover)").matches;
+  const fine = window.matchMedia("(pointer: fine)").matches;
+  const coarse = window.matchMedia("(pointer: coarse)").matches;
+  const touchPoints = navigator.maxTouchPoints || 0;
+  if (touchPoints > 0 || coarse) return false;
+  if (window.innerWidth < 1024) return false;
+  return hover && fine && !prefersReducedMotion();
+}
+
 export default function ScientificCursor({ enabled = false }) {
   const dotRef = useRef(null);
   const ringRef = useRef(null);
@@ -11,12 +22,23 @@ export default function ScientificCursor({ enabled = false }) {
 
   useEffect(() => {
     if (!enabled) return;
-    const fine = window.matchMedia("(pointer: fine)").matches;
-    if (!fine || prefersReducedMotion()) {
-      setAllowed(false);
-      return;
-    }
-    setAllowed(true);
+
+    const sync = () => {
+      const next = isDesktopPointer();
+      setAllowed(next);
+      document.documentElement.classList.toggle("bs-cursor-on", next);
+    };
+
+    sync();
+    window.addEventListener("resize", sync);
+    return () => {
+      window.removeEventListener("resize", sync);
+      document.documentElement.classList.remove("bs-cursor-on");
+    };
+  }, [enabled]);
+
+  useEffect(() => {
+    if (!enabled || !allowed) return;
 
     let frame = 0;
     const onMove = (event) => {
@@ -37,14 +59,12 @@ export default function ScientificCursor({ enabled = false }) {
 
     window.addEventListener("pointermove", onMove, { passive: true });
     frame = requestAnimationFrame(tick);
-    document.documentElement.classList.add("bs-cursor-on");
 
     return () => {
       window.removeEventListener("pointermove", onMove);
       cancelAnimationFrame(frame);
-      document.documentElement.classList.remove("bs-cursor-on");
     };
-  }, [enabled]);
+  }, [enabled, allowed]);
 
   if (!allowed) return null;
 
@@ -52,11 +72,11 @@ export default function ScientificCursor({ enabled = false }) {
     <>
       <span
         ref={dotRef}
-        className="pointer-events-none fixed left-0 top-0 z-[210] h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d4a017] shadow-[0_0_14px_rgba(212,160,23,0.6)]"
+        className="pointer-events-none fixed left-0 top-0 z-[210] hidden h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d4a017] shadow-[0_0_14px_rgba(212,160,23,0.6)] lg:block"
       />
       <span
         ref={ringRef}
-        className="pointer-events-none fixed left-0 top-0 z-[210] h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#d4a017]/60"
+        className="pointer-events-none fixed left-0 top-0 z-[210] hidden h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#d4a017]/60 lg:block"
       />
     </>
   );
