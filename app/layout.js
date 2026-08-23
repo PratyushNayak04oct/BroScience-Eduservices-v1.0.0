@@ -34,11 +34,8 @@ export const metadata = {
   description:
     "Premium education services — structured learning, expert mentorship, and competitive exam preparation for Classes 7–12, JEE, and NEET.",
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "32x32" },
-      { url: "/brand/favicon.png", type: "image/png", sizes: "64x64" },
-    ],
-    apple: "/apple-icon.png",
+    icon: [{ url: "/favicons/favicon.ico", sizes: "any" }],
+    apple: "/favicons/apple-touch-icon.png",
   },
   keywords: [
     "education",
