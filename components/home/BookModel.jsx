@@ -205,20 +205,15 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
   useEffect(() => {
     const clips = Object.values(actions).filter(Boolean);
     clips.forEach((action) => {
-      action.reset();
-      action.play();
+      action.enabled           = true;
       action.paused            = true;
       action.clampWhenFinished = true;
       action.setLoop(THREE.LoopOnce, 1);
-      action.time    = 0;
-      action.enabled = true;
-      action.weight  = 1;
+      action.weight            = 1;
+      action.play();
+      action.paused = true;
+      action.time   = 0;
     });
-    return () => {
-      clips.forEach((action) => {
-        action.stop();
-      });
-    };
   }, [actions]);
 
   useFrame((_, delta) => {
@@ -229,20 +224,24 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
     const hovered = Boolean(hoverRef?.current);
     const mouse   = mouseRef?.current ?? { x: 0, y: 0 };
 
+    const dt = Math.min(delta, 1 / 30);
     const target = reduced ? 0 : hovered ? 1 : 0;
-    progress.current = THREE.MathUtils.damp(
-      progress.current, target, reduced ? 6 : 2.4, delta,
-    );
-    if (Math.abs(progress.current - target) < 0.002) progress.current = target;
+    // Visible from the first frames, settles in about two seconds.
+    const lambda = reduced ? 6 : hovered ? 1.15 : 1.35;
+    progress.current = THREE.MathUtils.damp(progress.current, target, lambda, dt);
+    if (Math.abs(progress.current - target) < 0.0015) progress.current = target;
 
     const playhead = smoothstep(progress.current);
 
     // Scrub every baked GLB action to the same playhead.
     Object.values(actions).forEach((action) => {
       if (!action?.getClip()) return;
+      if (!action.enabled) {
+        action.enabled = true;
+        action.play();
+      }
       const dur = Math.max(action.getClip().duration, 0.001);
       action.paused  = true;
-      action.enabled = true;
       action.weight  = 1;
       action.time = playhead >= 1
         ? Math.max(dur - 0.001, 0)
@@ -253,14 +252,14 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
     // Cursor parallax, damped right down once the spread is being read.
     const follow = reduced ? 0 : THREE.MathUtils.lerp(1, 0.12, playhead);
     mouseRot.current.x = THREE.MathUtils.damp(
-      mouseRot.current.x, -mouse.y * MAX_ROT.x * follow, 1.2, delta,
+      mouseRot.current.x, -mouse.y * MAX_ROT.x * follow, 0.7, dt,
     );
     mouseRot.current.y = THREE.MathUtils.damp(
-      mouseRot.current.y,  mouse.x * MAX_ROT.y * follow, 1.2, delta,
+      mouseRot.current.y,  mouse.x * MAX_ROT.y * follow, 0.7, dt,
     );
 
     // Idle float settles as the book lies open.
-    floatPhase.current += delta * (reduced ? 0 : 0.2);
+    floatPhase.current += dt * (reduced ? 0 : 0.2);
     const floatAmp = THREE.MathUtils.lerp(0.008, 0.002, playhead);
     const idleY    = reduced ? 0 : Math.sin(floatPhase.current) * floatAmp;
 

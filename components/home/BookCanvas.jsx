@@ -15,10 +15,10 @@ if (typeof window !== "undefined" && !window.__broscienceFilteredThreeWarnings) 
   };
 }
 
-// Framed smaller than the canvas so the book stays the same size while the
-// taller scene gives the opening spread room. Larger values zoom the camera out.
-const NEEDED_WIDTH  = 3.55;
-const NEEDED_HEIGHT = 2.72;
+// Tight enough that the open spread fills the scene and page copy is readable.
+// A little margin remains so the turn does not clip the cover edges.
+const NEEDED_WIDTH  = 2.72;
+const NEEDED_HEIGHT = 2.02;
 const CAM_DIST      = 4.7;
 
 function CameraBridge({ animationRefs }) {
@@ -146,7 +146,7 @@ export default function BookCanvas({ animationRefs, onReady, hoverRef: hoverRefP
       window.removeEventListener("pointerdown", onDown);
       cancelAnimationFrame(frame);
     };
-  }, []);
+  }, [hoverRef]);
 
   // A dropped GPU context otherwise leaves a permanently blank canvas: the
   // default action makes the loss final, so prevent it to allow restoration and

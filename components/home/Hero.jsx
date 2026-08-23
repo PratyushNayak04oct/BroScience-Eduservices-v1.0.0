@@ -33,6 +33,7 @@ export default function Hero() {
   const [canRenderWebGL, setCanRenderWebGL] = useState(null);
   const [sceneReady, setSceneReady] = useState(false);
   const bookHoverRef = useRef(false);
+  const sceneRef = useRef(null);
 
   const handleSceneReady = useCallback(() => setSceneReady(true), []);
 
@@ -85,6 +86,29 @@ export default function Hero() {
 
     window.addEventListener("mousemove", onMove, { passive: true });
     return () => window.removeEventListener("mousemove", onMove);
+  }, []);
+
+  useEffect(() => {
+    const hit = (x, y) => {
+      const el = sceneRef.current;
+      if (!el) return false;
+      const r = el.getBoundingClientRect();
+      return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+    };
+
+    const onMove = (event) => {
+      bookHoverRef.current = hit(event.clientX, event.clientY);
+    };
+    const onLeave = () => {
+      bookHoverRef.current = false;
+    };
+
+    window.addEventListener("pointermove", onMove, { passive: true });
+    document.addEventListener("mouseleave", onLeave);
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      document.removeEventListener("mouseleave", onLeave);
+    };
   }, []);
 
   const useCanvas = canRenderWebGL === true;
@@ -163,6 +187,7 @@ export default function Hero() {
 
         {/* Scene is larger than the book so opening pages stay inside the canvas. */}
         <div
+          ref={sceneRef}
           className="hero-scene"
           onPointerEnter={() => {
             bookHoverRef.current = true;
