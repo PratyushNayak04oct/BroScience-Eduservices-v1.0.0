@@ -396,11 +396,43 @@ video {
 }
 
 /* ─── Route transition overlay ─── */
+.bs-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--foreground) 7%, var(--background));
+}
+
+.bs-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--brand-gold) 16%, transparent),
+    transparent
+  );
+  animation: bs-skeleton-shimmer 1.35s ease-in-out infinite;
+}
+
+@keyframes bs-skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bs-skeleton::after {
+    animation: none;
+  }
+}
+
 .bs-route-overlay {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none;
-  transition: opacity 0.18s ease, visibility 0.18s ease;
+  transition: opacity 0.32s ease, visibility 0.32s ease;
 }
 
 .bs-route-overlay.is-active {

@@ -3,29 +3,33 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { waitForRouteReady } from "@/lib/navigation/waitForRouteReady";
 
-const MIN_VISIBLE = 240;
-const FAILSAFE = 900;
-const STATUSES = ["CONNECTING IDEAS...", "OPENING THE PAGE...", "ALMOST THERE..."];
+const MIN_VISIBLE = 900;
+const FAILSAFE = 8000;
+const STATUSES = ["CONNECTING IDEAS...", "OPENING THE PAGE...", "PREPARING THE PAGE...", "ALMOST THERE..."];
 
 function isModifiedClick(event) {
   return event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0;
 }
 
-function isInternalNav(anchor) {
-  if (!anchor) return false;
-  if (anchor.target && anchor.target !== "_self") return false;
-  if (anchor.hasAttribute("download")) return false;
+function destinationFromAnchor(anchor) {
+  if (!anchor) return null;
+  if (anchor.target && anchor.target !== "_self") return null;
+  if (anchor.hasAttribute("download")) return null;
   const href = anchor.getAttribute("href");
   if (!href || href.startsWith("#") || href.startsWith("mailto:") || href.startsWith("tel:")) {
-    return false;
+    return null;
   }
   try {
     const url = new URL(href, window.location.href);
-    if (url.origin !== window.location.origin) return false;
-    return url.pathname !== window.location.pathname || url.search !== window.location.search;
+    if (url.origin !== window.location.origin) return null;
+    if (url.pathname === window.location.pathname && url.search === window.location.search) {
+      return null;
+    }
+    return url.pathname;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -33,9 +37,11 @@ export default function RouteTransition({ enabled = false }) {
   const pathname = usePathname();
   const overlayRef = useRef(null);
   const startedAt = useRef(0);
+  const pendingPath = useRef("");
   const hideTimer = useRef(0);
   const failTimer = useRef(0);
   const statusTimer = useRef(0);
+  const readyToken = useRef(0);
   const activeRef = useRef(false);
   const [active, setActive] = useState(false);
   const [status, setStatus] = useState(STATUSES[0]);
@@ -45,34 +51,47 @@ export default function RouteTransition({ enabled = false }) {
     window.clearTimeout(failTimer.current);
     window.clearInterval(statusTimer.current);
     activeRef.current = false;
+    pendingPath.current = "";
     overlayRef.current?.classList.remove("is-active");
     setActive(false);
   };
 
-  const scheduleHide = () => {
+  const finishWhenReady = async (expectedPath, token) => {
+    await waitForRouteReady(expectedPath, { timeout: FAILSAFE - 200 });
+    if (token !== readyToken.current || !activeRef.current) return;
+    if (expectedPath && window.location.pathname !== expectedPath) return;
+
+    setStatus("READY TO LEARN.");
+    const wait = Math.max(160, MIN_VISIBLE - (performance.now() - startedAt.current));
     window.clearTimeout(hideTimer.current);
-    const wait = Math.max(0, MIN_VISIBLE - (performance.now() - startedAt.current));
     hideTimer.current = window.setTimeout(hide, wait);
   };
 
-  const show = () => {
-    if (activeRef.current) return;
-    activeRef.current = true;
-    startedAt.current = performance.now();
-    setStatus(STATUSES[0]);
-    overlayRef.current?.classList.add("is-active");
-    setActive(true);
+  const show = (nextPath) => {
+    pendingPath.current = nextPath || "";
+    readyToken.current += 1;
+    const token = readyToken.current;
 
+    if (!activeRef.current) {
+      activeRef.current = true;
+      startedAt.current = performance.now();
+      setStatus(STATUSES[0]);
+      overlayRef.current?.classList.add("is-active");
+      setActive(true);
+
+      window.clearInterval(statusTimer.current);
+      let index = 0;
+      statusTimer.current = window.setInterval(() => {
+        index = Math.min(index + 1, STATUSES.length - 1);
+        setStatus(STATUSES[index]);
+        if (index === STATUSES.length - 1) window.clearInterval(statusTimer.current);
+      }, 420);
+    }
+
+    window.clearTimeout(hideTimer.current);
     window.clearTimeout(failTimer.current);
     failTimer.current = window.setTimeout(hide, FAILSAFE);
-
-    window.clearInterval(statusTimer.current);
-    let index = 0;
-    statusTimer.current = window.setInterval(() => {
-      index = Math.min(index + 1, STATUSES.length - 1);
-      setStatus(STATUSES[index]);
-      if (index === STATUSES.length - 1) window.clearInterval(statusTimer.current);
-    }, 280);
+    finishWhenReady(nextPath, token);
   };
 
   useEffect(() => {
@@ -80,18 +99,28 @@ export default function RouteTransition({ enabled = false }) {
 
     const onClick = (event) => {
       if (isModifiedClick(event)) return;
-      const anchor = event.target.closest?.("a[href]");
-      if (!isInternalNav(anchor)) return;
-      show();
+      const nextPath = destinationFromAnchor(event.target.closest?.("a[href]"));
+      if (!nextPath) return;
+      show(nextPath);
+    };
+
+    const onPopState = () => {
+      show(window.location.pathname);
     };
 
     document.addEventListener("click", onClick, true);
-    return () => document.removeEventListener("click", onClick, true);
+    window.addEventListener("popstate", onPopState);
+    return () => {
+      document.removeEventListener("click", onClick, true);
+      window.removeEventListener("popstate", onPopState);
+    };
   }, [enabled]);
 
   useEffect(() => {
     if (!enabled || !activeRef.current) return;
-    scheduleHide();
+    const expected = pendingPath.current;
+    if (expected && pathname !== expected) return;
+    finishWhenReady(expected || pathname, readyToken.current);
     return () => window.clearTimeout(hideTimer.current);
   }, [pathname, enabled]);
 
