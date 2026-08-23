@@ -16,9 +16,10 @@ if (typeof window !== "undefined" && !window.__broscienceFilteredThreeWarnings) 
 }
 
 // World-space extents that must stay in frame: the open spread is ~2.62 wide,
-// the closed book ~1.9 tall. Small margins keep the book dominant in its column.
-const NEEDED_WIDTH  = 2.8;
-const NEEDED_HEIGHT = 2.15;
+// the closed book ~1.9 tall. These are deliberately close to those figures so the
+// book fills ~96% of the frame; widening them zooms out.
+const NEEDED_WIDTH  = 2.72;
+const NEEDED_HEIGHT = 2.02;
 const CAM_DIST      = 4.7;
 
 function CameraBridge({ animationRefs }) {
@@ -86,6 +87,7 @@ export function isWebGLAvailable() {
 export default function BookCanvas({ animationRefs, onReady, className }) {
   const hoverRef = useRef(false);
   const mouseRef = useRef({ x: 0, y: 0 });
+  const wrapperRef = useRef(null);
   // Elevated and centred; CameraBridge refines the fov from the container aspect.
   const camera = useMemo(
     () => ({ position: [0, 0.5, CAM_DIST], fov: 36, near: 0.1, far: 40 }),
@@ -96,13 +98,77 @@ export default function BookCanvas({ animationRefs, onReady, className }) {
     []
   );
 
+  // Hover is hit-tested against the container rect rather than taken from
+  // pointerenter alone. This canvas mounts late (dynamic import + a large GLB),
+  // and a cursor already resting over the book never crosses the boundary, so
+  // pointerenter would never fire and the book would stay shut until the pointer
+  // left and came back.
   useEffect(() => {
     const onMove = (event) => {
       mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouseRef.current.y = (event.clientY / window.innerHeight) * 2 - 1;
+
+      const el = wrapperRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      hoverRef.current =
+        event.clientX >= r.left &&
+        event.clientX <= r.right &&
+        event.clientY >= r.top &&
+        event.clientY <= r.bottom;
     };
+
+    // Pointer gone from the window entirely: no further mousemove will arrive.
+    const onWindowLeave = () => {
+      hoverRef.current = false;
+    };
+
     window.addEventListener("mousemove", onMove, { passive: true });
-    return () => window.removeEventListener("mousemove", onMove);
+    document.addEventListener("mouseleave", onWindowLeave);
+    window.addEventListener("blur", onWindowLeave);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      document.removeEventListener("mouseleave", onWindowLeave);
+      window.removeEventListener("blur", onWindowLeave);
+    };
+  }, []);
+
+  // Seed the initial state from CSS :hover, which the browser tracks regardless
+  // of whether any JS pointer event has fired. Without this a cursor that is
+  // already resting on the book when this mounts produces no mousemove and no
+  // pointerenter, so the book would sit closed under the pointer.
+  useEffect(() => {
+    let frame = 0;
+    const seed = () => {
+      const el = wrapperRef.current;
+      if (!el) return;
+      try {
+        if (el.matches(":hover")) hoverRef.current = true;
+      } catch {
+        /* :hover unsupported in this engine; pointer events will cover it */
+      }
+    };
+    frame = requestAnimationFrame(seed);
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
+  // Touch devices have no hover, so a tap opens the book and a tap elsewhere
+  // closes it.
+  useEffect(() => {
+    const onDown = (event) => {
+      if (event.pointerType === "mouse") return;
+      const el = wrapperRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const inside =
+        event.clientX >= r.left &&
+        event.clientX <= r.right &&
+        event.clientY >= r.top &&
+        event.clientY <= r.bottom;
+      hoverRef.current = inside ? !hoverRef.current : false;
+    };
+    window.addEventListener("pointerdown", onDown, { passive: true });
+    return () => window.removeEventListener("pointerdown", onDown);
   }, []);
 
   if (!isWebGLAvailable()) {
@@ -111,12 +177,11 @@ export default function BookCanvas({ animationRefs, onReady, className }) {
 
   return (
     <div
+      ref={wrapperRef}
       className={`relative h-full w-full ${className ?? ""}`}
-      onPointerEnter={() => {
+      onPointerEnter={(event) => {
+        if (event.pointerType !== "mouse") return;
         hoverRef.current = true;
-      }}
-      onPointerLeave={() => {
-        hoverRef.current = false;
       }}
     >
       <Canvas

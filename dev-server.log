@@ -1,0 +1,87 @@
+npm warn Unknown env config "devdir". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+
+> code@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.2 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.191.169.43:3000
+✓ Ready in 2.4s
+✓ Running next.config.mjs took 31ms
+⚠ Slow filesystem detected. The benchmark took 253ms. If \\?\E:\Projects\Broscience-Eduservices-v1.0.0\code\.next\dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+
+○ Compiling / ...
+ GET /?v=4 200 in 15.9s (next.js: 13.2s, application-code: 2.8s)
+ GET /?v=7 200 in 15.9s (next.js: 13.1s, application-code: 2.9s)
+ GET / 200 in 1041ms (next.js: 32ms, application-code: 1009ms)
+ GET / 200 in 797ms (next.js: 594ms, application-code: 203ms)
+✓ Compiled in 22.8s
+ GET /?v=4 200 in 554ms (next.js: 390ms, application-code: 165ms)
+ GET /?v=7 200 in 552ms (next.js: 302ms, application-code: 250ms)
+ GET / 200 in 549ms (next.js: 134ms, application-code: 415ms)
+✓ Compiled in 6.3s
+ GET / 200 in 284ms (next.js: 35ms, application-code: 250ms)
+ GET /?v=4 200 in 285ms (next.js: 118ms, application-code: 167ms)
+ GET /?v=7 200 in 285ms (next.js: 187ms, application-code: 98ms)
+✓ Compiled in 233ms
+ GET /?v=4 200 in 421ms (next.js: 121ms, application-code: 300ms)
+ GET /?v=7 200 in 401ms (next.js: 204ms, application-code: 197ms)
+ GET / 200 in 428ms (next.js: 27ms, application-code: 401ms)
+✓ Compiled in 4.3s
+ GET /?v=4 200 in 443ms (next.js: 125ms, application-code: 318ms)
+ GET / 200 in 161ms (next.js: 28ms, application-code: 133ms)
+ GET /?v=7 200 in 359ms (next.js: 29ms, application-code: 330ms)
+ GET /?v=8 200 in 403ms (next.js: 50ms, application-code: 353ms)
+ GET / 200 in 2.5s (next.js: 2.1s, application-code: 412ms)
+✓ Compiled in 13.2s
+ GET / 200 in 851ms (next.js: 328ms, application-code: 522ms)
+ GET /?v=4 200 in 851ms (next.js: 551ms, application-code: 300ms)
+ GET /?v=8 200 in 197ms (next.js: 27ms, application-code: 170ms)
+ GET /?v=9 200 in 491ms (next.js: 266ms, application-code: 226ms)
+ GET /?v=10 200 in 2.3s (next.js: 1879ms, application-code: 470ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <InnerScrollHandlerNew focusAndScrollRef={{scrollRef:null, ...}} cacheNode={{rsc:{...}, ...}}>
+      <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+        <LoadingBoundary name="/" loading={null}>
+          <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={{...}} forbidden={undefined} unauthorized={undefined} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <InnerLayoutRouter url="/?v=10" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+                    <SegmentViewNode type="page" pagePath="page.js">
+                      <SegmentTrieNode>
+                      <HomePage>
+                        <Hero>
+                          <section className="relative f..." aria-label="BroScience...">
+                            <div>
+                            <div
+                              ref={{current:null}}
++                             className="relative mx-auto grid w-full max-w-7xl items-center gap-16 px-5 py-32 sm:px-8..."
+-                             className="relative mx-auto grid w-full max-w-7xl items-center gap-16 px-5 py-32 sm:px-8..."
+                            >
+                        ...
+                    ...
+                  ...
+      ...
+ 
+ GET /?v=10 200 in 240ms (next.js: 15ms, application-code: 224ms)
+ GET / 200 in 93ms (next.js: 11ms, application-code: 81ms)
+✓ Compiled in 16.7s
+ GET /?v=4 200 in 252ms (next.js: 27ms, application-code: 226ms)
+ GET /?v=11 200 in 1589ms (next.js: 1383ms, application-code: 206ms)
+ GET /?fresh=1 200 in 235ms (next.js: 18ms, application-code: 216ms)
+ GET /?nosnap=1 200 in 238ms (next.js: 36ms, application-code: 203ms)
+ GET /?err=1 200 in 280ms (next.js: 111ms, application-code: 168ms)
