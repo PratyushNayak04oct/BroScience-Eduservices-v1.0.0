@@ -16,27 +16,27 @@ export default function BrandReveal({ progress = 0, className }) {
       )}
     >
       <div
-        className="font-display text-[clamp(4.2rem,12vw,7.5rem)] leading-none tracking-tight text-[#f0d060]"
+        className="font-display text-[clamp(3.4rem,16vw,7.5rem)] leading-none tracking-tight text-[var(--loader-accent)]"
         style={{
           opacity: showMark,
           transform: `scale(${0.92 + showMark * 0.08})`,
-          textShadow: "0 0 42px rgba(212,160,23,0.28)",
+          textShadow: "0 0 42px color-mix(in srgb, var(--brand-gold) 35%, transparent)",
         }}
       >
         BS
       </div>
       <div
-        className="mt-5 h-px bg-[#d4a017]"
+        className="mt-5 h-px bg-[var(--brand-gold)]"
         style={{ width: `${showLine * 88}px`, opacity: showLine }}
       />
       <p
-        className="mt-6 font-display text-[clamp(1.4rem,4vw,2.35rem)] font-medium tracking-[0.18em] text-[#f7f3ea]"
+        className="mt-6 max-w-[92vw] font-display text-[clamp(1.15rem,5.4vw,2.35rem)] font-medium tracking-[0.12em] text-[var(--loader-fg)] sm:tracking-[0.18em]"
         style={{ opacity: showName, transform: `translateY(${(1 - showName) * 12}px)` }}
       >
         BROSCIENCE EDUSERVICES
       </p>
       <p
-        className="mt-4 max-w-md text-[0.7rem] font-medium uppercase tracking-[0.28em] text-[#d4a017] sm:text-xs"
+        className="mt-4 max-w-[20rem] text-[0.65rem] font-medium uppercase tracking-[0.16em] text-[var(--brand-gold)] sm:max-w-md sm:text-xs sm:tracking-[0.28em]"
         style={{ opacity: showTag, transform: `translateY(${(1 - showTag) * 8}px)` }}
       >
         Your Attitude Decides Your Altitude

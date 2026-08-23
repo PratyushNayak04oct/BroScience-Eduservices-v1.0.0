@@ -6,7 +6,7 @@ export default function BookLoading({ className }) {
   return (
     <div
       className={cn(
-        "flex h-full w-full flex-col items-center justify-center gap-6 bg-brand-black/95",
+        "flex h-full w-full flex-col items-center justify-center gap-6 bg-[var(--loader-bg)]",
         className
       )}
       role="status"

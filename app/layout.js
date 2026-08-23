@@ -58,10 +58,14 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
       className={`${displayFont.variable} ${bodyFont.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" /> {/* */}
+      </head>
+      
       <body className="min-h-full flex flex-col font-body">
         <script
           dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add("bs-loading");`,
+            __html: `(function(){var r=document.documentElement;r.classList.add("bs-loading");try{var t=localStorage.getItem("broscience-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}r.setAttribute("data-theme",t);}catch(e){r.setAttribute("data-theme","light");}})();`,
           }}
         />
         <div id="bs-boot-overlay" className="bs-boot-overlay" aria-hidden="true" />

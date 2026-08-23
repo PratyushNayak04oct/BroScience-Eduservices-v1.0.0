@@ -1,4 +1,4 @@
-import { GOLD, MAROON, IVORY, rgba } from "@/lib/loading/canvasTheme";
+import { GOLD, MAROON, ink, rgba } from "@/lib/loading/canvasTheme";
 
 function atom(ctx, x, y, radius, fill, stroke) {
   ctx.fillStyle = fill;
@@ -43,7 +43,7 @@ export function drawChemistry(ctx, { cx, cy, alpha, time, mouse, compact }) {
       Math.cos(a) * 70 * scale,
       Math.sin(a) * 26 * scale,
       2.4,
-      rgba(IVORY, 0.85),
+      rgba(ink(), 0.85),
       rgba(GOLD, 0.4)
     );
   }
@@ -76,9 +76,9 @@ function drawWater(ctx, x, y, scale, time) {
   const wobble = Math.sin(time * 1.3) * 1.5;
   bond(ctx, x, y, hx1, hy1 + wobble, 1);
   bond(ctx, x, y, hx2, hy2 - wobble, 1);
-  atom(ctx, x, y, 8 * scale, rgba(GOLD, 0.85), rgba(IVORY, 0.3));
-  atom(ctx, hx1, hy1 + wobble, 4.4 * scale, rgba(IVORY, 0.88), rgba(GOLD, 0.3));
-  atom(ctx, hx2, hy2 - wobble, 4.4 * scale, rgba(IVORY, 0.88), rgba(GOLD, 0.3));
+  atom(ctx, x, y, 8 * scale, rgba(GOLD, 0.85), rgba(ink(), 0.3));
+  atom(ctx, hx1, hy1 + wobble, 4.4 * scale, rgba(ink(), 0.88), rgba(GOLD, 0.3));
+  atom(ctx, hx2, hy2 - wobble, 4.4 * scale, rgba(ink(), 0.88), rgba(GOLD, 0.3));
 }
 
 function drawCO2(ctx, x, y, scale) {
@@ -86,6 +86,6 @@ function drawCO2(ctx, x, y, scale) {
   bond(ctx, x - span, y, x + span, y, 1);
   bond(ctx, x - span, y - 3, x + span, y - 3, 0.7);
   atom(ctx, x, y, 7.2 * scale, rgba(MAROON, 0.88), rgba(GOLD, 0.4));
-  atom(ctx, x - span, y, 5.2 * scale, rgba(GOLD, 0.8), rgba(IVORY, 0.25));
-  atom(ctx, x + span, y, 5.2 * scale, rgba(GOLD, 0.8), rgba(IVORY, 0.25));
+  atom(ctx, x - span, y, 5.2 * scale, rgba(GOLD, 0.8), rgba(ink(), 0.25));
+  atom(ctx, x + span, y, 5.2 * scale, rgba(GOLD, 0.8), rgba(ink(), 0.25));
 }

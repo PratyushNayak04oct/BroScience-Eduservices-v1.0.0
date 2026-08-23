@@ -19,6 +19,13 @@
   --muted: var(--light-muted);
   --border: rgba(10, 10, 10, 0.08);
   --border-strong: rgba(10, 10, 10, 0.16);
+
+  --loader-bg: #f4efe3;
+  --loader-fg: #14110e;
+  --loader-muted: rgba(20, 17, 14, 0.42);
+  --loader-accent: #b8860b;
+  --loader-grid: rgba(107, 20, 32, 0.1);
+  --loader-glow: radial-gradient(circle, rgba(212, 160, 23, 0.2), rgba(107, 20, 32, 0.08) 42%, transparent 70%);
 }
 
 [data-theme="dark"] {
@@ -33,6 +40,13 @@
   --muted: var(--dark-muted);
   --border: rgba(250, 247, 242, 0.1);
   --border-strong: rgba(250, 247, 242, 0.18);
+
+  --loader-bg: #070605;
+  --loader-fg: #f7f3ea;
+  --loader-muted: rgba(247, 243, 234, 0.42);
+  --loader-accent: #f0d060;
+  --loader-grid: rgba(212, 160, 23, 0.08);
+  --loader-glow: radial-gradient(circle, rgba(212, 160, 23, 0.24), rgba(107, 20, 32, 0.12) 42%, transparent 70%);
 }
 
 @theme inline {
@@ -56,7 +70,7 @@
 
 html {
   scroll-behavior: auto;
-  background: #070605;
+  background: var(--loader-bg);
   overflow-x: clip;
   max-width: 100%;
 }
@@ -64,14 +78,14 @@ html {
 html.bs-loading,
 html.bs-loading body {
   overflow: hidden;
-  background: #070605;
+  background: var(--loader-bg);
 }
 
 .bs-boot-overlay {
   position: fixed;
   inset: 0;
   z-index: 190;
-  background: #070605;
+  background: var(--loader-bg);
   animation: bs-boot-failsafe 0s 16s forwards;
 }
 
@@ -84,11 +98,12 @@ html.bs-loading body {
 }
 
 .bs-loader-shell {
-  color: #f7f3ea;
+  color: var(--loader-fg);
+  background: var(--loader-bg);
 }
 
 .bs-loader-grain {
-  opacity: 0.045;
+  opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -459,6 +474,8 @@ video {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none;
+  background: var(--loader-bg);
+  color: var(--loader-fg);
   transition: opacity 0.32s ease, visibility 0.32s ease;
 }
 
@@ -471,14 +488,14 @@ video {
 
 .route-grid {
   background-image:
-    linear-gradient(rgba(212, 160, 23, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(212, 160, 23, 0.08) 1px, transparent 1px);
+    linear-gradient(var(--loader-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--loader-grid) 1px, transparent 1px);
   background-size: 48px 48px;
-  mask-image: radial-gradient(circle at 50% 46%, #000 12%, transparent 72%);
+  mask-image: radial-gradient(circle at 50% 46%, #000 18%, transparent 72%);
 }
 
 .route-glow {
-  background: radial-gradient(circle, rgba(212, 160, 23, 0.24), rgba(107, 20, 32, 0.12) 42%, transparent 70%);
+  background: var(--loader-glow);
 }
 
 .bs-route-overlay.is-active .route-grid {

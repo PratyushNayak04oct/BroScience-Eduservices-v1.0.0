@@ -1,4 +1,4 @@
-import { GOLD, MAROON, IVORY, rgba } from "@/lib/loading/canvasTheme";
+import { GOLD, MAROON, ink, rgba } from "@/lib/loading/canvasTheme";
 
 export function drawBiology(ctx, { cx, cy, alpha, time, mouse, compact }) {
   if (alpha <= 0.01) return;
@@ -63,7 +63,7 @@ export function drawBiology(ctx, { cx, cy, alpha, time, mouse, compact }) {
   ctx.stroke();
 
   if (!compact) {
-    ctx.strokeStyle = rgba(IVORY, 0.12);
+    ctx.strokeStyle = rgba(ink(), 0.12);
     ctx.beginPath();
     ctx.ellipse(-150, 20, 46, 32, -0.3, 0, Math.PI * 2);
     ctx.stroke();

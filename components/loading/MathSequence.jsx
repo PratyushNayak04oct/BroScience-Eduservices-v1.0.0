@@ -1,4 +1,4 @@
-import { GOLD, IVORY, clamp, rgba, strokeLine } from "@/lib/loading/canvasTheme";
+import { GOLD, clamp, ink, rgba, strokeLine } from "@/lib/loading/canvasTheme";
 
 const SYMBOLS = ["∫ f(x) dx", "π", "Σ", "√x", "∇", "lim", "sin θ", "a²+b²=c²"];
 
@@ -49,7 +49,7 @@ export function drawMath(ctx, { cx, cy, alpha, time, mouse, compact }) {
   const by = size * 0.7;
   const cx2 = 0;
   const cy2 = -size * 0.85;
-  ctx.strokeStyle = rgba(IVORY, 0.35 * construct);
+  ctx.strokeStyle = rgba(ink(), 0.35 * construct);
   ctx.lineWidth = 1;
   ctx.beginPath();
   ctx.moveTo(ax, ay);

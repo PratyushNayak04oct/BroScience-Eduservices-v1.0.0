@@ -1,4 +1,4 @@
-import { GOLD, MAROON, IVORY, rgba, strokeLine } from "@/lib/loading/canvasTheme";
+import { GOLD, MAROON, ink, rgba, strokeLine } from "@/lib/loading/canvasTheme";
 
 export function drawPhysics(ctx, { cx, cy, alpha, time, mouse, compact }) {
   if (alpha <= 0.01) return;
@@ -34,7 +34,7 @@ export function drawPhysics(ctx, { cx, cy, alpha, time, mouse, compact }) {
   ctx.fill();
 
   const waveW = compact ? 150 : 220;
-  ctx.strokeStyle = rgba(IVORY, 0.28);
+  ctx.strokeStyle = rgba(ink(), 0.28);
   ctx.lineWidth = 1.1;
   ctx.beginPath();
   for (let i = 0; i <= 80; i += 1) {

@@ -118,20 +118,20 @@ export default function BroScienceLoader({ onRevealSite, onComplete }) {
       aria-modal="true"
       aria-label="BroScience opening sequence"
     >
-      <div className="absolute inset-0 bg-[#070605]" />
+      <div className="absolute inset-0 bg-[var(--loader-bg)]" />
       <div className="bs-loader-grain pointer-events-none absolute inset-0" />
       <ScientificCanvas storyRef={storyRef} reduced={mode === "reduced"} />
       <BrandReveal progress={phases.brand} />
 
-      <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-4 px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:pb-10">
+      <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col items-center gap-3 px-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] sm:gap-4 sm:px-6 sm:pb-10">
         <LoadingProgress progress={Math.max(progress, story)} />
-        <p className="font-mono text-[10px] tracking-[0.32em] text-[#d4a017]/80 sm:text-xs">
+        <p className="max-w-[90vw] text-center font-mono text-[10px] tracking-[0.2em] text-[var(--brand-gold)] sm:text-xs sm:tracking-[0.32em]">
           {status}
         </p>
         <button
           type="button"
           onClick={handleSkip}
-          className="text-[10px] tracking-[0.24em] text-[#f7f3ea]/35 transition-colors hover:text-[#d4a017]"
+          className="text-[10px] tracking-[0.24em] text-[var(--loader-muted)] transition-colors hover:text-[var(--brand-gold)]"
         >
           SKIP
         </button>

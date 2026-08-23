@@ -142,13 +142,13 @@ export default function RouteTransition({ enabled = false }) {
       aria-hidden={!active}
       aria-live="polite"
     >
-      <div className="absolute inset-0 bg-[#070605]" />
+      <div className="absolute inset-0 bg-[var(--loader-bg)]" />
       <div className="route-grid pointer-events-none absolute inset-0" />
-      <div className="route-glow pointer-events-none absolute left-1/2 top-[44%] h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full sm:h-72 sm:w-72" />
+      <div className="route-glow pointer-events-none absolute left-1/2 top-[44%] h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full sm:h-72 sm:w-72" />
 
       <div className="absolute left-1/2 top-[46%] flex w-[min(92vw,22rem)] -translate-x-1/2 -translate-y-1/2 flex-col items-center px-4">
-        <div className="relative flex h-28 w-28 items-center justify-center sm:h-36 sm:w-36">
-          <svg className="route-ring absolute inset-0 h-full w-full text-[#d4a017]" viewBox="0 0 96 96" aria-hidden="true">
+        <div className="relative flex h-24 w-24 items-center justify-center sm:h-36 sm:w-36">
+          <svg className="route-ring absolute inset-0 h-full w-full text-[var(--brand-gold)]" viewBox="0 0 96 96" aria-hidden="true">
             <circle cx="48" cy="48" r="42" fill="none" stroke="currentColor" strokeOpacity="0.16" strokeWidth="1" />
             <circle
               cx="48"
@@ -162,7 +162,7 @@ export default function RouteTransition({ enabled = false }) {
             />
           </svg>
           <svg
-            className="route-orbit absolute inset-3 h-[calc(100%-1.5rem)] w-[calc(100%-1.5rem)] text-[#f0d060]"
+            className="route-orbit absolute inset-3 h-[calc(100%-1.5rem)] w-[calc(100%-1.5rem)] text-[var(--loader-accent)]"
             viewBox="0 0 96 96"
             aria-hidden="true"
           >
@@ -178,10 +178,12 @@ export default function RouteTransition({ enabled = false }) {
               strokeLinecap="round"
             />
           </svg>
-          <p className="relative font-display text-[1.75rem] tracking-[0.16em] text-[#f0d060] sm:text-4xl">BS</p>
+          <p className="relative font-display text-[1.6rem] tracking-[0.16em] text-[var(--loader-accent)] sm:text-4xl">
+            BS
+          </p>
         </div>
-        <div className="mt-5 h-px w-20 bg-[#d4a017] sm:w-28" />
-        <p className="mt-5 max-w-full text-center font-mono text-[10px] tracking-[0.22em] text-[#d4a017]/90 sm:text-xs sm:tracking-[0.32em]">
+        <div className="mt-5 h-px w-16 bg-[var(--brand-gold)] sm:w-28" />
+        <p className="mt-5 max-w-full text-center font-mono text-[10px] tracking-[0.18em] text-[var(--brand-gold)] sm:text-xs sm:tracking-[0.32em]">
           {status}
         </p>
       </div>

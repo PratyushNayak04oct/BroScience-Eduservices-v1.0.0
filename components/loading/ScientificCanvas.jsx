@@ -7,7 +7,7 @@ import { drawChemistry } from "./ChemistrySequence";
 import { drawBiology } from "./BiologySequence";
 import { drawKnowledge } from "./KnowledgeReveal";
 import { getPhaseAlphas, getQuality } from "@/lib/loading/loaderProgress";
-import { GOLD, MAROON, rgba } from "@/lib/loading/canvasTheme";
+import { GOLD, MAROON, isDarkTheme, rgba } from "@/lib/loading/canvasTheme";
 
 export default function ScientificCanvas({ storyRef, reduced = false }) {
   const canvasRef = useRef(null);
@@ -110,10 +110,11 @@ export default function ScientificCanvas({ storyRef, reduced = false }) {
 }
 
 function drawBackground(ctx, width, height, mouse, time) {
+  const dark = isDarkTheme();
   const grid = 72;
   const offsetX = mouse.x * 8;
   const offsetY = mouse.y * 6;
-  ctx.strokeStyle = rgba(GOLD, 0.045);
+  ctx.strokeStyle = rgba(dark ? GOLD : MAROON, dark ? 0.045 : 0.07);
   ctx.lineWidth = 1;
   ctx.beginPath();
   for (let x = (offsetX % grid) - grid; x < width + grid; x += grid) {
@@ -134,9 +135,9 @@ function drawBackground(ctx, width, height, mouse, time) {
     height * 0.5,
     Math.max(width, height) * 0.55
   );
-  glow.addColorStop(0, rgba(GOLD, 0.07 + Math.sin(time) * 0.01));
-  glow.addColorStop(0.45, rgba(MAROON, 0.06));
-  glow.addColorStop(1, "rgba(0,0,0,0)");
+  glow.addColorStop(0, rgba(GOLD, (dark ? 0.07 : 0.12) + Math.sin(time) * 0.01));
+  glow.addColorStop(0.45, rgba(MAROON, dark ? 0.06 : 0.05));
+  glow.addColorStop(1, dark ? "rgba(0,0,0,0)" : "rgba(247,243,234,0)");
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, width, height);
 }
@@ -153,7 +154,7 @@ function drawParticles(ctx, items, mouse, width, height) {
     if (p.x > width) p.x = 0;
     if (p.y < 0) p.y = height;
     if (p.y > height) p.y = 0;
-    ctx.fillStyle = rgba(GOLD, 0.22);
+    ctx.fillStyle = rgba(GOLD, isDarkTheme() ? 0.22 : 0.28);
     ctx.beginPath();
     ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2);
     ctx.fill();

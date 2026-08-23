@@ -13,13 +13,14 @@ export default function LoadingProgress({ progress = 0, className }) {
       className={cn("pointer-events-none flex items-center gap-3", className)}
       aria-hidden="true"
     >
-      <svg width="96" height="96" viewBox="0 0 96 96" className="h-16 w-16 sm:h-20 sm:w-20">
+      <svg width="96" height="96" viewBox="0 0 96 96" className="h-14 w-14 text-[var(--brand-gold)] sm:h-20 sm:w-20">
         <circle
           cx="48"
           cy="48"
           r={radius}
           fill="none"
-          stroke="rgba(212,160,23,0.14)"
+          stroke="currentColor"
+          strokeOpacity="0.16"
           strokeWidth="1"
         />
         <circle
@@ -27,7 +28,7 @@ export default function LoadingProgress({ progress = 0, className }) {
           cy="48"
           r={radius}
           fill="none"
-          stroke="#d4a017"
+          stroke="currentColor"
           strokeWidth="1.4"
           strokeLinecap="round"
           strokeDasharray={circ}
