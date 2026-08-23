@@ -34,8 +34,12 @@ export default function SectionHeading({
       )}
 
       {title && (
-        <h2 className="font-display text-[clamp(2.25rem,4.4vw,3.75rem)] font-medium leading-[1.12] tracking-tight text-[var(--foreground)]">
+        <h2 className="group/heading font-display text-[clamp(2.25rem,4.4vw,3.75rem)] font-medium leading-[1.12] tracking-tight text-[var(--foreground)]">
           {title}
+          <span
+            className="mt-4 block h-px w-10 bg-[var(--brand-gold)] transition-all duration-500 group-hover/heading:w-16"
+            aria-hidden="true"
+          />
         </h2>
       )}
 

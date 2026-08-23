@@ -6,11 +6,10 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { prefersReducedMotion } from "@/lib/gsap";
 import { createPaperCanvas, createSpreadPair } from "@/lib/bookTextures";
+import { BOOK_MODEL_PATH, LOGO_PATH, markBookReady } from "@/lib/loading/loaderAssets";
 
 const PAPER_HEX = "#f2e9d2";
-const LOGO_PATH = "/brand/logo.png";
-
-const MODEL_PATH  = "/models/broscience-book.glb?v=16";
+const MODEL_PATH = BOOK_MODEL_PATH;
 // Sized so the fully-open spread (2 page widths) fills the frame without clipping.
 const TARGET_SIZE = 1.9;
 
@@ -196,6 +195,7 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
   useEffect(() => {
     animationRefs.current.book = wrapRef.current;
     onReady?.();
+    markBookReady();
     return () => { animationRefs.current.book = null; };
   }, [animationRefs, onReady]);
 

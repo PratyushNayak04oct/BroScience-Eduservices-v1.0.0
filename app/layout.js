@@ -3,6 +3,7 @@ import ThemeProvider from "@/components/layout/ThemeProvider";
 import SmoothScroll from "@/components/layout/SmoothScroll";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import LoaderProvider from "@/components/loading/LoaderProvider";
 import "./globals.css";
 
 const displayFont = Cormorant_Garamond({
@@ -53,12 +54,23 @@ export default function RootLayout({ children }) {
       className={`${displayFont.variable} ${bodyFont.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-body">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.add("bs-loading");`,
+          }}
+        />
+        <div id="bs-boot-overlay" className="bs-boot-overlay" aria-hidden="true" />
+        <noscript>
+          <style>{`.bs-boot-overlay{display:none!important}html.bs-loading{overflow:auto}`}</style>
+        </noscript>
         <ThemeProvider>
-          <SmoothScroll>
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </SmoothScroll>
+          <LoaderProvider>
+            <SmoothScroll>
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </SmoothScroll>
+          </LoaderProvider>
         </ThemeProvider>
       </body>
     </html>

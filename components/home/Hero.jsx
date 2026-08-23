@@ -8,6 +8,8 @@ import BookFallback from "./BookFallback";
 import BookLoading from "./BookLoading";
 import { isWebGLAvailable } from "./BookCanvas";
 import { prefersReducedMotion } from "@/lib/gsap";
+import { useLoader } from "@/components/loading/LoaderProvider";
+import { markBookReady } from "@/lib/loading/loaderAssets";
 
 const BookCanvas = dynamic(() => import("./BookCanvas"), {
   ssr: false,
@@ -34,6 +36,7 @@ export default function Hero() {
   const [sceneReady, setSceneReady] = useState(false);
   const bookHoverRef = useRef(false);
   const sceneRef = useRef(null);
+  const { hasEntered } = useLoader();
 
   const handleSceneReady = useCallback(() => setSceneReady(true), []);
 
@@ -42,11 +45,14 @@ export default function Hero() {
   }, []);
 
   useEffect(() => {
-    if (canRenderWebGL === false) setSceneReady(true);
+    if (canRenderWebGL === false) {
+      setSceneReady(true);
+      markBookReady();
+    }
   }, [canRenderWebGL]);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    if (!hasEntered || prefersReducedMotion()) return;
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -68,7 +74,7 @@ export default function Hero() {
     }, contentRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [hasEntered]);
 
   useEffect(() => {
     if (prefersReducedMotion()) return;
@@ -198,7 +204,7 @@ export default function Hero() {
         >
           <div className="book-aura" aria-hidden="true" />
           <div className="book-aura-core" aria-hidden="true" />
-          {canRenderWebGL === null || (useCanvas && !sceneReady) ? (
+          {hasEntered && (canRenderWebGL === null || (useCanvas && !sceneReady)) ? (
             <BookLoading className="pointer-events-none absolute inset-0 rounded-sm" />
           ) : null}
           {useCanvas ? (

@@ -26374,3 +26374,20 @@ https://react.dev/link/hydration-mismatch
  GET / 200 in 204ms (next.js: 27ms, application-code: 177ms)
  GET /library 200 in 1080ms (next.js: 985ms, application-code: 95ms)
  GET / 200 in 54ms (next.js: 7ms, application-code: 47ms)
+ GET /contact 200 in 2.6s (next.js: 2.4s, application-code: 163ms)
+ GET /contact 200 in 2.2s (next.js: 1983ms, application-code: 263ms)
+✓ Compiled in 17.1s
+✓ Compiled in 206ms
+ GET / 200 in 351ms (next.js: 129ms, application-code: 222ms)
+✓ Compiled in 232ms
+✓ Compiled in 108ms
+✓ Compiled in 26.9s
+ GET /marketplace 200 in 3.0s (next.js: 2.8s, application-code: 220ms)
+ GET /marketplace 200 in 147ms (next.js: 90ms, application-code: 56ms)
+ GET / 200 in 2.5s (next.js: 2.1s, application-code: 382ms)
+ GET / 200 in 169ms (next.js: 13ms, application-code: 155ms)
+[browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template). 
+ GET /marketplace 200 in 318ms (next.js: 115ms, application-code: 203ms)
+ GET / 200 in 1731ms (next.js: 1008ms, application-code: 723ms)
+✓ Finished filesystem cache database compaction in 45s
+[?25h
