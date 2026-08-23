@@ -32,10 +32,10 @@ function SceneContent({ animationRefs, onReady, hoverRef, mouseRef }) {
   return (
     <>
       <CameraBridge animationRefs={animationRefs} />
-      <hemisphereLight args={["#fff4e4", "#3a1818", 0.55]} />
-      <ambientLight intensity={0.50} color="#fff6ea" />
-      <directionalLight position={[2.2, 2.8, 3.4]} intensity={2.2} color="#fff8ee" />
-      <directionalLight position={[-1.8, 1.2, 2.2]} intensity={0.55} color="#e6b640" />
+      <hemisphereLight args={["#fff4e4", "#3a1818", 0.75]} />
+      <ambientLight intensity={0.72} color="#fff6ea" />
+      <directionalLight position={[2.2, 2.8, 3.4]} intensity={2.4} color="#fff8ee" />
+      <directionalLight position={[-1.8, 1.2, 2.2]} intensity={0.65} color="#e6b640" />
       <BookModel
         animationRefs={animationRefs}
         onReady={onReady}
@@ -62,10 +62,9 @@ export function isWebGLAvailable() {
 export default function BookCanvas({ animationRefs, onReady, className }) {
   const hoverRef = useRef(false);
   const mouseRef = useRef({ x: 0, y: 0 });
-  // Position: slightly right + up so opening cover stays in frame;
-  // FOV 32 gives enough width without making the book look too small.
+  // Camera: right + up offset so the opening cover stays in frame; FOV 32.
   const camera = useMemo(
-    () => ({ position: [0.12, 0.10, 5.0], fov: 32, near: 0.1, far: 40 }),
+    () => ({ position: [0.12, -0.04, 5.0], fov: 32, near: 0.1, far: 40 }),
     []
   );
   const gl = useMemo(

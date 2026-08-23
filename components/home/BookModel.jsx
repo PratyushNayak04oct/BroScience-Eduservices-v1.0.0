@@ -31,9 +31,8 @@ function prepare(root) {
 
   const scale = TARGET_SIZE / Math.max(size.x, size.y, size.z, 1);
   root.scale.setScalar(scale);
-  // Centre on bounding-box centre so the book occupies the canvas well.
-  // Shift +0.3 right so the spine is near world-centre (not off to the left).
-  root.position.set(-center.x * scale + 0.3, -center.y * scale, -center.z * scale);
+  // Centre on bounding-box centre, shift right for open-cover room, lift slightly.
+  root.position.set(-center.x * scale + 0.3, -center.y * scale + 0.14, -center.z * scale);
 
   root.traverse((child) => {
     if (!child.isMesh || !child.material) return;
@@ -153,9 +152,10 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
     const mouse   = mouseRef?.current ?? { x: 0, y: 0 };
 
     // Advance / retreat animation progress.
+    // lambda=1.2 → ~70% open after 1 s of hover, ~91% after 2 s — clearly visible.
     const target = reduced ? 0 : hovered ? 1 : 0;
     progress.current = THREE.MathUtils.damp(
-      progress.current, target, reduced ? 6 : 0.65, delta,
+      progress.current, target, reduced ? 6 : 1.2, delta,
     );
     if (Math.abs(progress.current - target) < 0.002) progress.current = target;
 
