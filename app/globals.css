@@ -168,13 +168,13 @@ body {
   padding-block: clamp(6.5rem, 12vw, 10rem);
 }
 
-/* ─── Hero scene: length tracks the viewport, capped so the open book
-   cannot push the page past 100svh and spawn a scrollbar. 100vw is avoided
-   because it includes the scrollbar gutter and causes a horizontal loop. */
+/* Scene is taller than the book so the opening spread has canvas around it
+   and does not clip. The book itself is framed by the camera, not this box.
+   Cap keeps the hero from forcing a page scrollbar. */
 :root {
   --hero-viewport-length: 100svh;
-  --hero-scene-ratio: 0.46;
-  --hero-scene-length: min(calc(var(--hero-viewport-length) * var(--hero-scene-ratio)), 460px);
+  --hero-scene-ratio: 0.62;
+  --hero-scene-length: min(calc(var(--hero-viewport-length) * var(--hero-scene-ratio)), 640px);
 }
 
 .hero-layout {
@@ -196,6 +196,52 @@ body {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+.book-aura {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 92%;
+  height: 92%;
+  pointer-events: none;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255, 214, 96, 0.62) 0%, rgba(212, 160, 23, 0.34) 26%, rgba(107, 20, 32, 0.16) 50%, transparent 74%);
+  filter: blur(22px);
+  animation: book-aura-pulse 5.6s ease-in-out infinite;
+}
+
+.book-aura-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 42%;
+  height: 52%;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 228, 140, 0.78) 0%, rgba(212, 160, 23, 0.28) 42%, transparent 74%);
+  filter: blur(12px);
+  animation: book-aura-pulse 5.6s ease-in-out infinite reverse;
+}
+
+@keyframes book-aura-pulse {
+  0%,
+  100% {
+    opacity: 0.72;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-aura,
+  .book-aura-core {
+    animation: none;
+  }
 }
 
 @media (min-width: 600px) {

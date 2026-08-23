@@ -15,11 +15,10 @@ if (typeof window !== "undefined" && !window.__broscienceFilteredThreeWarnings) 
   };
 }
 
-// World-space extents that must stay in frame: the open spread is ~2.62 wide,
-// the closed book ~1.9 tall. These are deliberately close to those figures so the
-// book fills ~96% of the frame; widening them zooms out.
-const NEEDED_WIDTH  = 2.64;
-const NEEDED_HEIGHT = 1.94;
+// Framed smaller than the canvas so the book stays the same size while the
+// taller scene gives the opening spread room. Larger values zoom the camera out.
+const NEEDED_WIDTH  = 3.55;
+const NEEDED_HEIGHT = 2.72;
 const CAM_DIST      = 4.7;
 
 function CameraBridge({ animationRefs }) {
@@ -61,6 +60,8 @@ function SceneContent({ animationRefs, onReady, hoverRef, mouseRef }) {
       <directionalLight position={[0.6, 3.2, 3.6]} intensity={2.2} color="#fff8ee" />
       <directionalLight position={[-2.2, -0.6, 3.0]} intensity={0.8} color="#fff0e0" />
       <directionalLight position={[-1.0, 1.2, 2.6]} intensity={0.7} color="#f0c040" />
+      <pointLight position={[0, 0.15, 0.55]} intensity={3.2} color="#f3c14a" distance={5.5} decay={2} />
+      <pointLight position={[0, -0.2, -0.8]} intensity={1.4} color="#8a1c2c" distance={4.5} decay={2} />
       <BookModel
         animationRefs={animationRefs}
         onReady={onReady}
@@ -95,7 +96,12 @@ export default function BookCanvas({ animationRefs, onReady, className }) {
     []
   );
   const gl = useMemo(
-    () => ({ antialias: true, alpha: true, powerPreference: "high-performance" }),
+    () => ({
+      antialias: true,
+      alpha: true,
+      premultipliedAlpha: false,
+      powerPreference: "high-performance",
+    }),
     []
   );
 
@@ -146,6 +152,7 @@ export default function BookCanvas({ animationRefs, onReady, className }) {
   // remount the scene once the browser hands the context back, rebuilding the
   // textures and geometry that died with it.
   const handleCreated = useCallback(({ gl }) => {
+    gl.setClearColor(0x000000, 0);
     const canvas = gl.domElement;
     const onLost = (event) => event.preventDefault();
     const onRestored = () => setContextKey((k) => k + 1);

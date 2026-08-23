@@ -160,9 +160,10 @@ export default function Hero() {
           </p>
         </div>
 
-        {/* Scene + book size: --hero-scene-length = 70% of the viewport. */}
+        {/* Scene is larger than the book so opening pages stay inside the canvas. */}
         <div className="hero-scene">
-          <div className="glass-orb pointer-events-none absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
+          <div className="book-aura" aria-hidden="true" />
+          <div className="book-aura-core" aria-hidden="true" />
           {canRenderWebGL === null || (useCanvas && !sceneReady) ? (
             <BookLoading className="pointer-events-none absolute inset-0 rounded-sm" />
           ) : null}

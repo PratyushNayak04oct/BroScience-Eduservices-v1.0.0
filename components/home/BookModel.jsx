@@ -5,7 +5,10 @@ import { useFrame } from "@react-three/fiber";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { prefersReducedMotion } from "@/lib/gsap";
-import { createSpreadPair } from "@/lib/bookTextures";
+import { createPaperCanvas, createSpreadPair } from "@/lib/bookTextures";
+
+const PAPER_HEX = "#f2e9d2";
+const LOGO_PATH = "/brand/logo.png";
 
 const MODEL_PATH  = "/models/broscience-book.glb?v=16";
 // Sized so the fully-open spread (2 page widths) fills the frame without clipping.
@@ -60,6 +63,7 @@ function prepare(root) {
       }
 
       if (id.includes("page") || id.includes("paper") || id.includes("edge") || id.includes("block")) {
+        m.color.set(PAPER_HEX);
         m.roughness   = 0.9;
         m.metalness   = 0;
         m.transparent = false;
@@ -81,35 +85,79 @@ function prepare(root) {
   });
 }
 
-// Swap the baked page textures for the canvas-drawn spread halves.
-// MeshBasicMaterial (unlit) is deliberate: once the book is open the left page
-// shows its BACK face to the camera, which no directional light reaches.
-function applySpreadTextures(root) {
-  const { left, right } = createSpreadPair();
+function makeCanvasTexture(canvas) {
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.flipY       = false;
+  texture.anisotropy  = 4;
+  texture.colorSpace  = THREE.SRGBColorSpace;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function loadLogoImage() {
+  return new Promise((resolve) => {
+    const image = new Image();
+    image.onload  = () => resolve(image);
+    image.onerror = () => resolve(null);
+    image.src     = LOGO_PATH;
+  });
+}
+
+// Content on one face, matching cream paper on the other. The open left leaf
+// faces the camera with its back, so its text lives on the back face only —
+// otherwise the same copy reads through from the wrong side while the page turns.
+function applyPrintedLeaf(child, texture, contentOnBack) {
+  child.material = new THREE.MeshBasicMaterial({
+    map:        texture,
+    side:       contentOnBack ? THREE.BackSide : THREE.FrontSide,
+    toneMapped: false,
+    depthWrite: true,
+  });
+
+  if (child.userData.paperFace) return;
+  const paperFace = new THREE.Mesh(
+    child.geometry,
+    new THREE.MeshBasicMaterial({
+      color:      PAPER_HEX,
+      side:       contentOnBack ? THREE.FrontSide : THREE.BackSide,
+      toneMapped: false,
+      depthWrite: true,
+    }),
+  );
+  paperFace.name = `${child.name}_PaperFace`;
+  paperFace.raycast = () => {};
+  child.add(paperFace);
+  child.userData.paperFace = paperFace;
+}
+
+function applySpreadTextures(root, logoImage) {
+  const { left, right } = createSpreadPair(undefined, logoImage);
+  const paperTexture = makeCanvasTexture(createPaperCanvas());
 
   root.traverse((child) => {
     if (!child.isMesh) return;
-    const canvas =
-      child.name === "Book_LeftPage"  ? left  :
-      child.name === "Book_RightPage" ? right : null;
-    if (!canvas) return;
 
-    const texture = new THREE.CanvasTexture(canvas);
-    // Matches the glTF UV convention (V=0 at top) used by the exported mesh.
-    texture.flipY       = false;
-    texture.anisotropy  = 4;
-    texture.colorSpace  = THREE.SRGBColorSpace;
-    texture.needsUpdate = true;
+    if (child.name.includes("LeftPage") && !child.name.includes("PaperFace")) {
+      applyPrintedLeaf(child, makeCanvasTexture(left), true);
+      return;
+    }
+    if (child.name.includes("RightPage") && !child.name.includes("PaperFace")) {
+      applyPrintedLeaf(child, makeCanvasTexture(right), false);
+      return;
+    }
 
-    child.material = new THREE.MeshBasicMaterial({
-      map:         texture,
-      side:        THREE.DoubleSide,
-      transparent: false,
-      depthWrite:  true,
-      // The page art is hand-drawn to final values; the renderer's default ACES
-      // curve would desaturate the warm cream into khaki, so opt out of it.
-      toneMapped:  false,
-    });
+    const isPaperStack =
+      child.name.startsWith("Book_PageLayer_") ||
+      /Block|Edge|Head|Tail|Paper|PageIvory/i.test(child.name);
+    if (isPaperStack) {
+      child.material = new THREE.MeshBasicMaterial({
+        map:        child.name.startsWith("Book_PageLayer_") ? paperTexture : null,
+        color:      PAPER_HEX,
+        side:       THREE.DoubleSide,
+        toneMapped: false,
+        depthWrite: true,
+      });
+    }
   });
 }
 
@@ -131,7 +179,12 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
   const { actions, mixer } = useAnimations(animations, clone);
 
   useEffect(() => {
-    if (clone) applySpreadTextures(clone);
+    if (!clone) return;
+    let cancelled = false;
+    loadLogoImage().then((logo) => {
+      if (!cancelled) applySpreadTextures(clone, logo);
+    });
+    return () => { cancelled = true; };
   }, [clone]);
 
   useEffect(() => {
