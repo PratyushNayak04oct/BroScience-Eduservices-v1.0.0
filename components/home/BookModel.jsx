@@ -6,7 +6,7 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { prefersReducedMotion } from "@/lib/gsap";
 
-const MODEL_PATH = "/models/broscience-book.glb?v=6";
+const MODEL_PATH = "/models/broscience-book.glb?v=9";
 const TARGET_SIZE = 1.72;
 const MAX_ROT = {
   x: THREE.MathUtils.degToRad(2.5),
