@@ -168,6 +168,51 @@ body {
   padding-block: clamp(6.5rem, 12vw, 10rem);
 }
 
+/* ─── Hero scene: length tracks the viewport, capped so the open book
+   cannot push the page past 100svh and spawn a scrollbar. 100vw is avoided
+   because it includes the scrollbar gutter and causes a horizontal loop. */
+:root {
+  --hero-viewport-length: 100svh;
+  --hero-scene-ratio: 0.46;
+  --hero-scene-length: min(calc(var(--hero-viewport-length) * var(--hero-scene-ratio)), 460px);
+}
+
+.hero-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 2.5rem;
+}
+
+.hero-scene {
+  position: relative;
+  z-index: 10;
+  isolation: isolate;
+  display: flex;
+  width: 100%;
+  height: var(--hero-scene-length);
+  max-width: 100%;
+  margin-inline: auto;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+@media (min-width: 600px) {
+  .hero-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+    align-items: center;
+    gap: 2.5rem;
+  }
+
+  .hero-scene {
+    width: 100%;
+    height: var(--hero-scene-length);
+    margin-inline: 0;
+  }
+}
+
 /* ─── Fine grain overlay utility ─── */
 .grain-overlay::before {
   content: "";

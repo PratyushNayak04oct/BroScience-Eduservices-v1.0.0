@@ -119,11 +119,14 @@ export default function Hero() {
         />
       </div>
 
+      {/* Two sections: copy on the left, 3D book on the right. Below 600px the
+          layout stacks as a column. Scene length is capped so the open book
+          cannot create a page scrollbar. */}
       <div
         ref={contentRef}
-        className="relative mx-auto grid w-full max-w-7xl items-center gap-16 px-5 py-32 sm:px-8 lg:grid-cols-[minmax(0,0.84fr)_minmax(0,1.16fr)] lg:gap-12 lg:py-40"
+        className="hero-layout relative mx-auto w-full max-w-7xl px-5 py-24 sm:px-8"
       >
-        <div className="relative z-30 isolate flex flex-col gap-10 lg:pr-8">
+        <div className="relative z-30 isolate flex flex-col gap-10 min-[600px]:pr-6">
           <p
             ref={eyebrowRef}
             className="text-xs font-medium uppercase tracking-[0.28em] text-[var(--brand-gold)]"
@@ -157,14 +160,11 @@ export default function Hero() {
           </p>
         </div>
 
-        {/* Height kept close to the open spread's aspect so the book fills the
-            column instead of floating in dead vertical space. Lifted in the
-            layout rather than in world space: the book already fills ~90% of the
-            frame height, so an in-canvas offset would clip the cover. */}
-        <div className="relative z-10 isolate flex h-[min(66vw,440px)] w-full -translate-y-4 items-center justify-center overflow-visible lg:h-[min(54vh,470px)] lg:-translate-y-10">
+        {/* Scene + book size: --hero-scene-length = 70% of the viewport. */}
+        <div className="hero-scene">
           <div className="glass-orb pointer-events-none absolute left-1/2 top-1/2 h-[120%] w-[120%] -translate-x-1/2 -translate-y-1/2 rounded-full" />
           {canRenderWebGL === null || (useCanvas && !sceneReady) ? (
-            <BookLoading className="absolute inset-0 rounded-sm" />
+            <BookLoading className="pointer-events-none absolute inset-0 rounded-sm" />
           ) : null}
           {useCanvas ? (
             <BookCanvas
