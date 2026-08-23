@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -31,16 +32,33 @@ export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const navRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 16);
-    };
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const readY = () => window.__bsLenis?.scroll ?? window.scrollY ?? 0;
+    const handleScroll = () => setScrolled(readY() > 8);
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const lenis = window.__bsLenis;
+    lenis?.on("scroll", handleScroll);
+    const poll = window.setInterval(() => {
+      if (window.__bsLenis && window.__bsLenis !== lenis) {
+        window.__bsLenis.on("scroll", handleScroll);
+        window.clearInterval(poll);
+      }
+    }, 200);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.__bsLenis?.off("scroll", handleScroll);
+      lenis?.off("scroll", handleScroll);
+      window.clearInterval(poll);
+    };
   }, []);
 
   useEffect(() => {
@@ -59,15 +77,12 @@ export default function Navbar() {
     return pathname.startsWith(href);
   };
 
-  return (
+  const bar = (
     <>
       <header
-        ref={navRef}
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-all duration-500 ease-out",
-          scrolled
-            ? "border-b border-white/10 bg-[var(--background)]/55 shadow-[0_8px_32px_rgba(10,10,10,0.08)] backdrop-blur-2xl"
-            : "bg-transparent"
+          "bs-navbar",
+          scrolled ? "bs-navbar-scrolled" : "bs-navbar-top"
         )}
       >
         <nav
@@ -153,4 +168,7 @@ export default function Navbar() {
       />
     </>
   );
+
+  if (!mounted) return bar;
+  return createPortal(bar, document.body);
 }

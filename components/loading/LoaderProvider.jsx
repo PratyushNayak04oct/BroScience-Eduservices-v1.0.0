@@ -28,7 +28,7 @@ export default function LoaderProvider({ children }) {
       )}
       <RouteTransition enabled={hasEntered} />
       <ScientificCursor enabled={hasEntered} />
-      <div className={`min-w-0 ${hasEntered ? "bs-app-visible" : "bs-app-pending"}`}>{children}</div>
+      {children}
     </LoaderContext.Provider>
   );
 }

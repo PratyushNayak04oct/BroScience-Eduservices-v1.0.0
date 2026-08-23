@@ -1,7 +1,6 @@
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
 import ThemeProvider from "@/components/layout/ThemeProvider";
-import SmoothScroll from "@/components/layout/SmoothScroll";
-import Navbar from "@/components/layout/Navbar";
+import AppShell from "@/components/layout/AppShell";
 import Footer from "@/components/layout/Footer";
 import LoaderProvider from "@/components/loading/LoaderProvider";
 import "./globals.css";
@@ -71,11 +70,10 @@ export default function RootLayout({ children }) {
         </noscript>
         <ThemeProvider>
           <LoaderProvider>
-            <SmoothScroll>
-              <Navbar />
+            <AppShell>
               <main className="min-w-0 flex-1 overflow-x-clip">{children}</main>
               <Footer />
-            </SmoothScroll>
+            </AppShell>
           </LoaderProvider>
         </ThemeProvider>
       </body>

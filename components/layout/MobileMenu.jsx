@@ -120,7 +120,7 @@ export default function MobileMenu({ id, isOpen, onClose, links, pathname }) {
   return (
     <div
       id={id}
-      className="fixed inset-0 z-[60] lg:hidden"
+      className="fixed inset-0 z-[110] lg:hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Mobile navigation"
