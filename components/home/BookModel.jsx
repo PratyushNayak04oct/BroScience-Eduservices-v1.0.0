@@ -6,13 +6,18 @@ import { useAnimations, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { prefersReducedMotion } from "@/lib/gsap";
 
-const MODEL_PATH = "/models/broscience-book.glb?v=9";
-const TARGET_SIZE = 1.72;
+const MODEL_PATH = "/models/broscience-book.glb?v=10";
+const TARGET_SIZE = 1.88;
 const MAX_ROT = {
-  x: THREE.MathUtils.degToRad(2.5),
-  y: THREE.MathUtils.degToRad(4),
-  z: THREE.MathUtils.degToRad(0.8),
+  x: THREE.MathUtils.degToRad(2),
+  y: THREE.MathUtils.degToRad(3.2),
+  z: THREE.MathUtils.degToRad(0.5),
 };
+
+function smoothstep(value) {
+  const t = THREE.MathUtils.clamp(value, 0, 1);
+  return t * t * (3 - 2 * t);
+}
 
 function prepare(root) {
   root.updateMatrixWorld(true);
@@ -23,7 +28,7 @@ function prepare(root) {
   box.getCenter(center);
   const scale = TARGET_SIZE / Math.max(size.x, size.y, size.z, 1);
   root.scale.setScalar(scale);
-  root.position.set(-center.x * scale * 0.35, -center.y * scale, -center.z * scale);
+  root.position.set(-center.x * scale, -center.y * scale, -center.z * scale);
 
   root.traverse((child) => {
     if (!child.isMesh || !child.material) return;
@@ -32,8 +37,8 @@ function prepare(root) {
       material.side = THREE.DoubleSide;
       const name = `${child.name} ${material.name}`.toLowerCase();
       if (name.includes("cover") || name.includes("cloth") || name.includes("maroon")) {
-        material.roughness = Math.min(material.roughness ?? 0.5, 0.45);
-        material.metalness = Math.min(material.metalness ?? 0.05, 0.06);
+        material.roughness = Math.min(material.roughness ?? 0.5, 0.42);
+        material.metalness = Math.min(material.metalness ?? 0.05, 0.05);
       }
       if (name.includes("page") || name.includes("spread") || name.includes("paper")) {
         if (material.map) {
@@ -41,14 +46,16 @@ function prepare(root) {
           material.map.rotation = 0;
           if (child.name === "Book_LeftPage") {
             material.map.wrapS = THREE.RepeatWrapping;
-            material.map.wrapT = THREE.RepeatWrapping;
             material.map.repeat.set(-1, 1);
             material.map.offset.set(1, 0);
           }
           material.map.needsUpdate = true;
         }
-        material.roughness = 0.88;
+        material.roughness = 0.9;
         material.metalness = 0;
+        material.transparent = false;
+        material.opacity = 1;
+        material.depthWrite = true;
       }
       material.needsUpdate = true;
     });
@@ -102,33 +109,34 @@ export default function BookModel({ animationRefs, onReady, hoverRef, mouseRef }
     const hovered = Boolean(hoverRef?.current);
     const mouse = mouseRef?.current ?? { x: 0, y: 0 };
     const target = reduced ? 0 : hovered ? 1 : 0;
-    progress.current = THREE.MathUtils.damp(progress.current, target, reduced ? 6 : 1.35, delta);
-    if (Math.abs(progress.current - target) < 0.003) {
+    progress.current = THREE.MathUtils.damp(progress.current, target, reduced ? 5 : 0.68, delta);
+    if (Math.abs(progress.current - target) < 0.002) {
       progress.current = target;
     }
 
+    const playhead = smoothstep(progress.current);
     Object.values(actions).forEach((action) => {
       if (!action?.getClip()) return;
       const duration = Math.max(action.getClip().duration, 0.001);
       action.paused = true;
       action.enabled = true;
       action.weight = 1;
-      const raw = progress.current * duration;
-      action.time = progress.current >= 1 ? Math.max(duration - 0.001, 0) : Math.min(raw, duration - 0.001);
+      const raw = playhead * duration;
+      action.time = playhead >= 1 ? Math.max(duration - 0.001, 0) : Math.min(raw, duration - 0.001);
     });
     mixer.update(0);
 
-    const follow = reduced ? 0.1 : 1;
-    mouseRot.current.x = THREE.MathUtils.damp(mouseRot.current.x, -mouse.y * MAX_ROT.x * follow, 1.8, delta);
-    mouseRot.current.y = THREE.MathUtils.damp(mouseRot.current.y, mouse.x * MAX_ROT.y * follow, 1.8, delta);
+    const follow = reduced ? 0.08 : THREE.MathUtils.lerp(1, 0.28, playhead);
+    mouseRot.current.x = THREE.MathUtils.damp(mouseRot.current.x, -mouse.y * MAX_ROT.x * follow, 1.4, delta);
+    mouseRot.current.y = THREE.MathUtils.damp(mouseRot.current.y, mouse.x * MAX_ROT.y * follow, 1.4, delta);
 
-    floatPhase.current += delta * (reduced ? 0 : 0.28);
-    const idleY = reduced ? 0 : Math.sin(floatPhase.current) * 0.01;
+    floatPhase.current += delta * (reduced ? 0 : 0.22);
+    const idleY = reduced ? 0 : Math.sin(floatPhase.current) * 0.008;
 
-    wrap.rotation.x = 0.06 + mouseRot.current.x;
-    wrap.rotation.y = -0.22 + mouseRot.current.y;
-    wrap.rotation.z = mouseRot.current.y * 0.05;
-    wrap.position.x = progress.current * 0.1;
+    wrap.rotation.x = 0.04 + mouseRot.current.x;
+    wrap.rotation.y = -0.08 + mouseRot.current.y;
+    wrap.rotation.z = mouseRot.current.y * 0.03;
+    wrap.position.x = 0;
     wrap.position.y = idleY;
   });
 

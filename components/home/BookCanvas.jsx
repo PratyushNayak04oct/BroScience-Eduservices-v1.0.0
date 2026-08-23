@@ -63,7 +63,7 @@ export default function BookCanvas({ animationRefs, onReady, className }) {
   const hoverRef = useRef(false);
   const mouseRef = useRef({ x: 0, y: 0 });
   const camera = useMemo(
-    () => ({ position: [0.58, 0.2, 4.2], fov: 27, near: 0.1, far: 40 }),
+    () => ({ position: [0, 0.04, 4.05], fov: 28, near: 0.1, far: 40 }),
     []
   );
   const gl = useMemo(
