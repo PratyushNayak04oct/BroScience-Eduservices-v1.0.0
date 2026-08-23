@@ -6,7 +6,7 @@ export default function BlogCard({ article }) {
   return (
     <Link href={`/blogs/${article.slug}`}>
       <GlassCard interactive className="group flex h-full flex-col gap-4 p-6">
-        <div className="aspect-[16/9] overflow-hidden rounded-xl bg-gradient-to-br from-[var(--brand-maroon)]/25 to-[var(--brand-gold)]/15" />
+        <div className="aspect-[16/9] overflow-hidden rounded-xl bg-gradient-to-br from-[var(--brand-maroon)]/25 to-[var(--brand-gold)]/15 transition-transform duration-700 group-hover:scale-[1.03]" />
         <span className="text-xs font-medium uppercase tracking-[0.15em] text-[var(--brand-gold)]">
           {article.category}
         </span>

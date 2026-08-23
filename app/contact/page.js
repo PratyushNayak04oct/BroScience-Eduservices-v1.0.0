@@ -47,7 +47,7 @@ export default function ContactPage() {
             <Reveal>
               <div className="grid gap-4">
                 {contactInfo.map((item) => (
-                  <GlassCard key={item.label} className="p-6">
+                  <GlassCard key={item.label} interactive intensity={0.75} className="p-6">
                     <p className="text-xs font-medium uppercase tracking-[0.15em] text-[var(--muted)]">
                       {item.label}
                     </p>

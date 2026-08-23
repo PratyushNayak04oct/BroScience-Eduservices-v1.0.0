@@ -40,7 +40,7 @@ export default function LibraryPreview() {
             <Reveal key={category.name} delay={index * 0.06}>
               <Link
                 href="/library"
-                className="group flex items-center justify-between border-b border-[var(--border)] py-6 transition-colors hover:border-[var(--brand-gold)]"
+                className="group flex items-center justify-between border-b border-[var(--border)] py-6 transition-all duration-300 hover:translate-x-1 hover:border-[var(--brand-gold)]"
               >
                 <div>
                   <h3 className="text-base font-semibold tracking-tight text-[var(--foreground)] transition-colors group-hover:text-[var(--brand-gold)]">
@@ -50,7 +50,7 @@ export default function LibraryPreview() {
                     {category.count} resource{category.count !== 1 ? "s" : ""}
                   </p>
                 </div>
-                <span className="font-mono text-xs text-[var(--muted)] transition-colors group-hover:text-[var(--brand-gold)]">
+                <span className="font-mono text-xs text-[var(--muted)] transition-all duration-300 group-hover:translate-x-1 group-hover:text-[var(--brand-gold)]">
                   →
                 </span>
               </Link>

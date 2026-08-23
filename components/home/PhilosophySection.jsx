@@ -47,7 +47,11 @@ export default function PhilosophySection() {
           <ol className="space-y-14 lg:pt-4">
             {pillars.map((pillar, index) => (
               <Reveal key={pillar.title} delay={index * 0.1}>
-                <li className="border-t border-[var(--border)] pt-8">
+                <li className="group border-t border-[var(--border)] pt-8 transition-transform duration-500 hover:-translate-y-1">
+                  <span
+                    className="mb-5 block h-px w-0 bg-[var(--brand-gold)] transition-all duration-500 group-hover:w-12"
+                    aria-hidden="true"
+                  />
                   <span className="font-mono text-xs tracking-[0.22em] text-[var(--brand-gold)]">
                     0{index + 1}
                   </span>

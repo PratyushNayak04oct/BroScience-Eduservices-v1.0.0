@@ -142,6 +142,14 @@ body {
   will-change: transform;
 }
 
+/* ─── Micro-interactions ─── */
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  a[href],
+  button:not(:disabled) {
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
 /* ─── Editorial link underline ─── */
 .editorial-link {
   position: relative;

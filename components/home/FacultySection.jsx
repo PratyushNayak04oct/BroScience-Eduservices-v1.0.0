@@ -28,7 +28,7 @@ export default function FacultySection() {
             <article className="group">
               <div className="relative aspect-[4/5] max-h-[36rem] overflow-hidden border border-[var(--border)] bg-[linear-gradient(160deg,rgba(107,20,32,0.88),rgba(20,17,14,0.92))]">
                 <div
-                  className="absolute inset-0 opacity-40"
+                  className="absolute inset-0 opacity-40 transition-transform duration-700 ease-out group-hover:scale-110"
                   style={{
                     backgroundImage:
                       "radial-gradient(circle at 50% 42%, rgba(212,160,23,0.28), transparent 46%)",
@@ -95,8 +95,10 @@ export default function FacultySection() {
                       onClick={() => setActiveId(member.id)}
                       onMouseEnter={() => setActiveId(member.id)}
                       className={cn(
-                        "flex w-full items-baseline justify-between gap-6 border-b border-[var(--border)] py-5 text-left transition-colors",
-                        isActive ? "text-[var(--foreground)]" : "text-[var(--muted)] hover:text-[var(--foreground)]"
+                        "group/faculty relative flex w-full items-baseline justify-between gap-6 border-b border-[var(--border)] py-5 text-left transition-all duration-300",
+                        isActive
+                          ? "translate-x-1 text-[var(--foreground)]"
+                          : "text-[var(--muted)] hover:translate-x-1 hover:text-[var(--foreground)]"
                       )}
                     >
                       <span className="font-display text-xl">{member.name}</span>

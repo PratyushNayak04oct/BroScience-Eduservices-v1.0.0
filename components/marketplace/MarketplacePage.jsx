@@ -27,7 +27,7 @@ function MarketplaceContent() {
             <button
               type="button"
               onClick={openCart}
-              className="relative rounded-full border border-[var(--border-strong)] px-5 py-2.5 text-sm font-medium text-[var(--foreground)] transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
+              className="relative rounded-full border border-[var(--border-strong)] px-5 py-2.5 text-sm font-medium text-[var(--foreground)] transition-all duration-200 hover:scale-[1.03] hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)] active:scale-[0.97]"
             >
               Cart
               {itemCount > 0 && (

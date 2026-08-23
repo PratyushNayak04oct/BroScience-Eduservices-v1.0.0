@@ -12,6 +12,7 @@ export default function Reveal({
   y = 40,
   once = true,
   as: Component = "div",
+  ...props
 }) {
   const ref = useRef(null);
 
@@ -49,7 +50,7 @@ export default function Reveal({
   }, [delay, duration, y, once]);
 
   return (
-    <Component ref={ref} className={cn(className)}>
+    <Component ref={ref} className={cn(className)} {...props}>
       {children}
     </Component>
   );

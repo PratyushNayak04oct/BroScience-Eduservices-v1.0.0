@@ -30,7 +30,7 @@ export default function ResourceFilters({
           className={cn(
             "w-full rounded-xl border border-[var(--border)] bg-[var(--surface)] px-4 py-3 text-sm",
             "text-[var(--foreground)] placeholder:text-[var(--muted)] outline-none",
-            "transition-colors focus:border-[var(--brand-gold)] focus:ring-2 focus:ring-[var(--brand-gold)]/20"
+            "transition-all duration-200 focus:-translate-y-px focus:border-[var(--brand-gold)] focus:ring-2 focus:ring-[var(--brand-gold)]/20"
           )}
         />
       </div>
@@ -67,7 +67,8 @@ function FilterChip({ label, active, onClick }) {
       type="button"
       onClick={onClick}
       className={cn(
-        "rounded-full border px-4 py-2 text-xs font-medium transition-colors",
+        "rounded-full border px-4 py-2 text-xs font-medium transition-all duration-200",
+        "hover:scale-[1.04] active:scale-[0.96]",
         active
           ? "border-[var(--brand-gold)] bg-[var(--brand-gold)]/10 text-[var(--brand-gold)]"
           : "border-[var(--border)] text-[var(--muted)] hover:border-[var(--border-strong)] hover:text-[var(--foreground)]"

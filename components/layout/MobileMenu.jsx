@@ -172,7 +172,7 @@ export default function MobileMenu({ id, isOpen, onClose, links, pathname }) {
               href={link.href}
               onClick={handleClose}
               className={cn(
-                "rounded-xl px-4 py-3.5 text-lg font-medium tracking-wide transition-colors",
+                "rounded-xl px-4 py-3.5 text-lg font-medium tracking-wide transition-all duration-300 hover:translate-x-1",
                 isActive(link.href)
                   ? "bg-[var(--brand-gold)]/10 text-[var(--brand-gold)]"
                   : "text-[var(--foreground)] hover:bg-[var(--surface)]"

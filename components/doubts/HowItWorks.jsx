@@ -33,7 +33,7 @@ export default function HowItWorks() {
     <div className="grid gap-6 sm:grid-cols-2">
       {steps.map((item, index) => (
         <Reveal key={item.step} delay={index * 0.08}>
-          <GlassCard className="flex h-full gap-5 p-6">
+          <GlassCard interactive intensity={0.7} className="flex h-full gap-5 p-6">
             <span className="font-mono text-sm tracking-[0.2em] text-[var(--brand-gold)]">
               {item.step}
             </span>

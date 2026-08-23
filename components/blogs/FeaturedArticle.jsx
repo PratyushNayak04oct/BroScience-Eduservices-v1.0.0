@@ -4,7 +4,7 @@ import { formatDate } from "@/lib/utils";
 
 export default function FeaturedArticle({ article }) {
   return (
-    <GlassCard className="overflow-hidden">
+    <GlassCard interactive intensity={0.45} className="overflow-hidden">
       <div className="grid lg:grid-cols-2">
         <div className="aspect-[16/10] bg-gradient-to-br from-[var(--brand-maroon)]/30 to-[var(--brand-gold)]/20 lg:aspect-auto lg:min-h-[360px]" />
         <div className="flex flex-col justify-center gap-5 p-8 sm:p-10">

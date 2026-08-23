@@ -40,7 +40,7 @@ export default function DoubtsPage() {
               </h2>
             </Reveal>
             <Reveal delay={0.08}>
-              <GlassCard className="p-6 sm:p-8">
+              <GlassCard interactive intensity={0.55} className="p-6 sm:p-8">
                 <ul className="flex flex-col gap-4">
                   {features.map((feature) => (
                     <li key={feature} className="flex items-start gap-3 text-sm text-[var(--muted)]">

@@ -26,7 +26,7 @@ export default function ResourceCard({ resource }) {
 
       <button
         type="button"
-        className="w-full rounded-full border border-[var(--border-strong)] py-2.5 text-sm font-medium text-[var(--foreground)] transition-colors hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)]"
+        className="w-full rounded-full border border-[var(--border-strong)] py-2.5 text-sm font-medium text-[var(--foreground)] transition-all duration-200 hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)] hover:scale-[1.01] active:scale-[0.98]"
       >
         {resource.isFree ? "Download Free" : "Unlock Resource"}
       </button>

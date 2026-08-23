@@ -43,7 +43,7 @@ export default function BlogsListing() {
               type="button"
               onClick={() => setSelectedCategory(category)}
               className={cn(
-                "rounded-full border px-4 py-2 text-xs font-medium transition-colors",
+                "rounded-full border px-4 py-2 text-xs font-medium transition-all duration-200 hover:scale-[1.04] active:scale-[0.96]",
                 selectedCategory === category
                   ? "border-[var(--brand-gold)] bg-[var(--brand-gold)]/10 text-[var(--brand-gold)]"
                   : "border-[var(--border)] text-[var(--muted)] hover:text-[var(--foreground)]"

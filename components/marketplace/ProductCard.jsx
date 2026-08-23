@@ -9,7 +9,7 @@ export default function ProductCard({ product, featured = false }) {
 
   return (
     <GlassCard interactive className={`flex h-full flex-col gap-4 p-6 ${featured ? "ring-1 ring-[var(--brand-gold)]/30" : ""}`}>
-      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-gradient-to-br from-[var(--brand-maroon)]/20 to-[var(--brand-gold)]/15">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-xl bg-gradient-to-br from-[var(--brand-maroon)]/20 to-[var(--brand-gold)]/15 transition-transform duration-700 group-hover/card:scale-[1.03]">
         {featured && (
           <span className="absolute left-3 top-3 rounded-full bg-[var(--brand-gold)] px-3 py-1 text-xs font-medium text-[var(--brand-black)]">
             Featured
@@ -47,7 +47,7 @@ export default function ProductCard({ product, featured = false }) {
           type="button"
           onClick={() => addItem(product)}
           disabled={!product.inStock}
-          className="rounded-full bg-[var(--brand-gold)] px-4 py-2 text-xs font-medium text-[var(--brand-black)] transition-colors hover:bg-[#d4b45c] disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-full bg-[var(--brand-gold)] px-4 py-2 text-xs font-medium text-[var(--brand-black)] transition-all duration-200 hover:bg-[#d4b45c] hover:scale-[1.04] active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
         >
           Add to Cart
         </button>

@@ -77,7 +77,7 @@ export default function Footer({ className }) {
             </div>
           </div>
 
-          <GlassCard className="p-6 lg:col-span-3">
+          <GlassCard interactive intensity={0.6} className="p-6 lg:col-span-3">
             <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--brand-gold)]">
               Contact
             </h3>

@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import Magnetic from "@/components/ui/Magnetic";
 import { useTheme } from "./ThemeProvider";
 
 function SunIcon({ className }) {
@@ -35,19 +36,23 @@ export default function ThemeToggle({ className }) {
   const isDark = theme === "dark";
 
   return (
-    <button
-      type="button"
-      onClick={toggleTheme}
-      className={cn(
-        "inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)]",
-        "bg-[var(--surface)]/80 text-[var(--foreground)] backdrop-blur-md",
-        "transition-all duration-300 hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)] hover:scale-105",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]",
-        className
-      )}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-    >
-      {isDark ? <SunIcon /> : <MoonIcon />}
-    </button>
+    <span className={cn("inline-flex", className)}>
+      <Magnetic strength={10}>
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className={cn(
+            "inline-flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border)]",
+            "bg-[var(--surface)]/80 text-[var(--foreground)] backdrop-blur-md",
+            "transition-all duration-300 hover:border-[var(--brand-gold)] hover:text-[var(--brand-gold)] hover:rotate-12",
+            "active:scale-95",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]"
+          )}
+          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+        >
+          {isDark ? <SunIcon /> : <MoonIcon />}
+        </button>
+      </Magnetic>
+    </span>
   );
 }

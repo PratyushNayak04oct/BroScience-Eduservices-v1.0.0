@@ -29,7 +29,7 @@ export default function TestimonialsSection() {
           {testimonials.map((testimonial) => (
             <figure
               key={testimonial.id}
-              className="w-[85vw] shrink-0 sm:w-[28rem] lg:w-[32rem]"
+              className="group w-[85vw] shrink-0 transition-transform duration-500 hover:-translate-y-1 sm:w-[28rem] lg:w-[32rem]"
             >
               <blockquote>
                 <p className="text-2xl font-medium leading-snug tracking-tight text-[var(--foreground)] sm:text-3xl">
@@ -37,7 +37,7 @@ export default function TestimonialsSection() {
                 </p>
               </blockquote>
               <figcaption className="mt-8 flex items-center gap-4">
-                <div className="h-px w-8 bg-[var(--brand-gold)]" aria-hidden="true" />
+                <div className="h-px w-8 bg-[var(--brand-gold)] transition-all duration-500 group-hover:w-14" aria-hidden="true" />
                 <div>
                   <p className="text-sm font-semibold text-[var(--foreground)]">
                     {testimonial.name}

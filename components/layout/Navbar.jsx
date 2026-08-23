@@ -103,7 +103,7 @@ export default function Navbar() {
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "group/nav relative px-3 py-2 text-sm font-medium tracking-wide transition-colors duration-300",
+                  "group/nav relative px-3 py-2 text-sm font-medium tracking-wide transition-all duration-300 hover:-translate-y-px",
                   isActive(link.href)
                     ? "text-[var(--brand-gold)]"
                     : "text-[var(--muted)] hover:text-[var(--foreground)]"

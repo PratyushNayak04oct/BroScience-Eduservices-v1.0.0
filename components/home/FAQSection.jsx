@@ -44,7 +44,7 @@ function FAQItem({ faq, isOpen, onToggle }) {
     <div className="border-b border-[var(--border)]">
       <button
         type="button"
-        className="flex w-full items-start justify-between gap-4 py-6 text-left transition-colors hover:text-[var(--brand-gold)]"
+        className="flex w-full items-start justify-between gap-4 py-6 text-left transition-all duration-300 hover:translate-x-1 hover:text-[var(--brand-gold)]"
         onClick={onToggle}
         aria-expanded={isOpen}
       >

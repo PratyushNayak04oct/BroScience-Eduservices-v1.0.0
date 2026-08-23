@@ -1,5 +1,5 @@
 import SectionHeading from "@/components/ui/SectionHeading";
-import Reveal from "@/components/ui/Reveal";
+import FeatureTile from "@/components/home/FeatureTile";
 import { features } from "@/data/features";
 
 export default function FeaturesSection() {
@@ -16,21 +16,7 @@ export default function FeaturesSection() {
 
         <div className="grid gap-px bg-[var(--border)] sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature, index) => (
-            <Reveal
-              key={feature.id}
-              delay={index * 0.05}
-              className="bg-[var(--background)] p-8 sm:p-10 transition-colors duration-500 hover:bg-[var(--surface)]"
-            >
-              <span className="font-mono text-xs tracking-[0.2em] text-[var(--brand-gold)]">
-                {feature.number}
-              </span>
-              <h3 className="mt-4 text-lg font-semibold tracking-tight text-[var(--foreground)]">
-                {feature.title}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-[var(--muted)]">
-                {feature.description}
-              </p>
-            </Reveal>
+            <FeatureTile key={feature.id} feature={feature} index={index} />
           ))}
         </div>
       </div>

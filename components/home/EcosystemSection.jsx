@@ -32,7 +32,7 @@ export default function EcosystemSection() {
                 </h3>
                 <Link
                   href="/courses"
-                  className="text-xs text-[var(--muted)] transition-colors hover:text-[var(--foreground)]"
+                  className="text-xs text-[var(--muted)] transition-all duration-300 hover:translate-x-0.5 hover:text-[var(--foreground)]"
                 >
                   View all →
                 </Link>
@@ -42,7 +42,7 @@ export default function EcosystemSection() {
                   <li key={course.slug}>
                     <Link
                       href={`/courses/${course.slug}`}
-                      className="group block border-b border-[var(--border)] pb-4 transition-colors hover:border-[var(--brand-gold)]"
+                      className="group block border-b border-[var(--border)] pb-4 transition-all duration-300 hover:translate-x-1 hover:border-[var(--brand-gold)]"
                     >
                       <p className="text-sm font-semibold tracking-tight text-[var(--foreground)] group-hover:text-[var(--brand-gold)]">
                         {course.title}
@@ -66,7 +66,7 @@ export default function EcosystemSection() {
                 </h3>
                 <Link
                   href="/marketplace"
-                  className="text-xs text-[var(--muted)] transition-colors hover:text-[var(--foreground)]"
+                  className="text-xs text-[var(--muted)] transition-all duration-300 hover:translate-x-0.5 hover:text-[var(--foreground)]"
                 >
                   Shop all →
                 </Link>
@@ -76,7 +76,7 @@ export default function EcosystemSection() {
                   <li key={product.id}>
                     <Link
                       href={`/marketplace/${product.slug}`}
-                      className="group block border-b border-[var(--border)] pb-4 transition-colors hover:border-[var(--brand-gold)]"
+                      className="group block border-b border-[var(--border)] pb-4 transition-all duration-300 hover:translate-x-1 hover:border-[var(--brand-gold)]"
                     >
                       <p className="text-sm font-semibold tracking-tight text-[var(--foreground)] group-hover:text-[var(--brand-gold)]">
                         {product.title}
@@ -100,7 +100,7 @@ export default function EcosystemSection() {
                 </h3>
                 <Link
                   href="/blogs"
-                  className="text-xs text-[var(--muted)] transition-colors hover:text-[var(--foreground)]"
+                  className="text-xs text-[var(--muted)] transition-all duration-300 hover:translate-x-0.5 hover:text-[var(--foreground)]"
                 >
                   Read more →
                 </Link>
@@ -110,7 +110,7 @@ export default function EcosystemSection() {
                   <li key={blog.slug}>
                     <Link
                       href={`/blogs/${blog.slug}`}
-                      className="group block border-b border-[var(--border)] pb-4 transition-colors hover:border-[var(--brand-gold)]"
+                      className="group block border-b border-[var(--border)] pb-4 transition-all duration-300 hover:translate-x-1 hover:border-[var(--brand-gold)]"
                     >
                       <p className="text-sm font-semibold tracking-tight text-[var(--foreground)] group-hover:text-[var(--brand-gold)]">
                         {blog.title}

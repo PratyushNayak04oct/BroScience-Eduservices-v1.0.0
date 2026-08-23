@@ -1,7 +1,9 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { prefersReducedMotion } from "@/lib/gsap";
 
 const variants = {
   primary:
@@ -47,10 +49,33 @@ export default function Button({
   disabled = false,
   icon,
 }) {
+  const magnetRef = useRef(null);
+
+  const onMagnetMove = (event) => {
+    if (prefersReducedMotion() || disabled) return;
+    const node = magnetRef.current;
+    if (!node) return;
+    const rect = node.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 10;
+    const y = ((event.clientY - rect.top) / rect.height - 0.5) * 8;
+    node.style.transition = "none";
+    node.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+  };
+
+  const onMagnetLeave = () => {
+    const node = magnetRef.current;
+    if (!node) return;
+    node.style.transition = "transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)";
+    node.style.transform = "translate3d(0, 0, 0)";
+  };
+
+  const isFullWidth = typeof className === "string" && className.includes("w-full");
+
   const classes = cn(
     "group relative z-20 inline-flex min-h-11 items-center justify-center gap-2.5 overflow-hidden rounded-full px-6 py-3 text-sm font-medium tracking-wide",
     "pointer-events-auto touch-manipulation cursor-pointer",
-    "transition-[color,background-color,border-color,box-shadow] duration-200 ease-out",
+    "transition-[color,background-color,border-color,box-shadow,transform] duration-200 ease-out",
+    "active:scale-[0.97]",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-gold)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]",
     "disabled:pointer-events-none disabled:opacity-50",
     variants[variant],
@@ -62,7 +87,7 @@ export default function Button({
       <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
       {icon && <span className="relative shrink-0">{icon}</span>}
       <span className="relative">{children}</span>
-      <ArrowIcon className="relative shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1" />
+      <ArrowIcon className="relative shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1.5" />
     </>
   );
 
@@ -81,15 +106,26 @@ export default function Button({
     }, 350);
   };
 
+  const magnet = (node) => (
+    <span
+      ref={magnetRef}
+      className={cn("inline-flex will-change-transform", isFullWidth && "w-full")}
+      onMouseMove={onMagnetMove}
+      onMouseLeave={onMagnetLeave}
+    >
+      {node}
+    </span>
+  );
+
   if (href) {
-    return (
+    return magnet(
       <Link href={href} className={classes} onClick={handleClick}>
         {content}
       </Link>
     );
   }
 
-  return (
+  return magnet(
     <button type={type} className={classes} onClick={onClick} disabled={disabled}>
       {content}
     </button>

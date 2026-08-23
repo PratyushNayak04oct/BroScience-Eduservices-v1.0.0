@@ -28,7 +28,7 @@ export default function BlogPreview() {
           {/* Featured article */}
           <Reveal className="lg:col-span-7">
             <Link href={`/blogs/${featured.slug}`} className="group block">
-              <div className="aspect-[16/10] overflow-hidden rounded-2xl border border-[var(--border)] bg-gradient-to-br from-[var(--brand-gold)]/5 to-[var(--brand-maroon)]/5">
+              <div className="aspect-[16/10] overflow-hidden rounded-2xl border border-[var(--border)] bg-gradient-to-br from-[var(--brand-gold)]/5 to-[var(--brand-maroon)]/5 transition-transform duration-700 group-hover:-translate-y-1">
                 <div className="flex h-full flex-col justify-end p-8 sm:p-10">
                   <span className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--brand-gold)]">
                     {featured.category}
@@ -53,7 +53,7 @@ export default function BlogPreview() {
               <Reveal key={blog.slug} delay={index * 0.08}>
                 <Link
                   href={`/blogs/${blog.slug}`}
-                  className="group block border-b border-[var(--border)] pb-6 transition-colors hover:border-[var(--brand-gold)]"
+                  className="group block border-b border-[var(--border)] pb-6 transition-all duration-300 hover:translate-x-1 hover:border-[var(--brand-gold)]"
                 >
                   <span className="text-xs font-medium uppercase tracking-[0.15em] text-[var(--brand-gold)]">
                     {blog.category}

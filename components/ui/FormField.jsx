@@ -32,6 +32,7 @@ export default function FormField({
   const fieldState = error ? "error" : state;
   const wrapperClass = cn(
     "rounded-xl border px-4 py-3 transition-all duration-200",
+    "focus-within:-translate-y-0.5 focus-within:shadow-[0_10px_24px_rgba(10,10,10,0.06)]",
     stateStyles[fieldState],
     disabled && "opacity-60"
   );

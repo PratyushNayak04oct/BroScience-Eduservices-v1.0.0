@@ -139,7 +139,7 @@ export default function MentorshipSection() {
                 {mentorshipPillars.map((pillar) => (
                   <div
                     key={pillar.title}
-                    className="rounded-xl border border-[var(--border)] p-4"
+                    className="rounded-xl border border-[var(--border)] p-4 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--brand-gold)]/50"
                   >
                     <p className="text-2xl font-semibold tracking-tight text-[var(--foreground)]">
                       {pillar.metric}
