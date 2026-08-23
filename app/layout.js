@@ -1,4 +1,5 @@
 import { Cormorant_Garamond, DM_Sans } from "next/font/google";
+import Script from "next/script";
 import ThemeProvider from "@/components/layout/ThemeProvider";
 import AppShell from "@/components/layout/AppShell";
 import Footer from "@/components/layout/Footer";
@@ -58,12 +59,10 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
       className={`${displayFont.variable} ${bodyFont.variable} h-full antialiased`}
     >
-      <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" /> {/* */}
-      </head>
-      
       <body className="min-h-full flex flex-col font-body">
-        <script
+        <Script
+          id="bs-theme-boot"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `(function(){var r=document.documentElement;r.classList.add("bs-loading");try{var t=localStorage.getItem("broscience-theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}r.setAttribute("data-theme",t);}catch(e){r.setAttribute("data-theme","light");}})();`,
           }}

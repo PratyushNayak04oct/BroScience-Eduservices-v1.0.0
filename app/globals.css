@@ -89,6 +89,10 @@ html.bs-loading body {
   animation: bs-boot-failsafe 0s 16s forwards;
 }
 
+html:not(.bs-loading) .bs-boot-overlay {
+  display: none;
+}
+
 @keyframes bs-boot-failsafe {
   to {
     opacity: 0;

@@ -24,7 +24,6 @@ export default function BroScienceLoader({ onRevealSite, onComplete }) {
   const [mode, setMode] = useState("cinematic");
 
   useEffect(() => {
-    document.getElementById("bs-boot-overlay")?.remove();
     document.documentElement.classList.add("bs-loading");
 
     const resolvedMode = getLoaderMode();
