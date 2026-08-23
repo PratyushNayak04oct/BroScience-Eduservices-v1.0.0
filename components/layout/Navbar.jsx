@@ -71,12 +71,12 @@ export default function Navbar() {
         )}
       >
         <nav
-          className="mx-auto flex h-[4.25rem] max-w-7xl items-center justify-between gap-3 px-4 sm:h-[4.5rem] sm:gap-6 sm:px-8"
+          className="mx-auto flex h-[4.25rem] w-full min-w-0 max-w-7xl items-center justify-between gap-2 px-3 sm:h-[4.5rem] sm:gap-6 sm:px-8"
           aria-label="Main navigation"
         >
           <Link
             href="/"
-            className="group flex items-center gap-3 text-[var(--foreground)]"
+            className="group flex min-w-0 items-center gap-2 text-[var(--foreground)] sm:gap-3"
             aria-label="BroScience Eduservices home"
           >
             <span className="relative h-11 w-11 overflow-hidden rounded-full ring-1 ring-[var(--brand-gold)]/40 transition-transform duration-300 group-hover:scale-105">
@@ -120,7 +120,7 @@ export default function Navbar() {
             ))}
           </div>
 
-          <div className="relative z-50 flex items-center gap-3">
+          <div className="relative z-50 flex shrink-0 items-center gap-2 sm:gap-3">
             <ThemeToggle className="hidden sm:inline-flex" />
             <Button href="/contact" className="hidden md:inline-flex !px-5 !py-2.5 !text-xs">
               Book Free Counselling

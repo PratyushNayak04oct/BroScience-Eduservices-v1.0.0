@@ -22,7 +22,7 @@ const pillars = [
 
 export default function PhilosophySection() {
   return (
-    <section className="relative overflow-hidden py-32 sm:py-40 lg:py-48">
+    <section className="relative overflow-hidden py-16 sm:py-32 lg:py-48">
       <Parallax speed={0.12} className="pointer-events-none absolute -left-24 top-16">
         <div className="h-72 w-72 rounded-full bg-[var(--brand-gold)]/8 blur-3xl" />
       </Parallax>
@@ -31,7 +31,7 @@ export default function PhilosophySection() {
       </Parallax>
 
       <div className="relative mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="grid items-start gap-16 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-28">
+        <div className="grid min-w-0 items-start gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-28">
           <Reveal>
             <SectionHeading
               number="02"
@@ -39,7 +39,7 @@ export default function PhilosophySection() {
               title="Education that respects how students actually learn"
               description="We combine rigorous academics with empathy — because sustainable excellence comes from clarity, not pressure alone."
             />
-            <p className="mt-12 max-w-xl font-display text-2xl leading-snug text-[var(--foreground)] sm:text-3xl">
+            <p className="mt-8 max-w-xl font-display text-xl leading-snug text-[var(--foreground)] sm:mt-12 sm:text-3xl">
               Knowledge, then direction. Discipline after that. The future follows.
             </p>
           </Reveal>

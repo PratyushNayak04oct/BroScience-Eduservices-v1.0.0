@@ -160,31 +160,31 @@ export default function Hero() {
           cannot create a page scrollbar. */}
       <div
         ref={contentRef}
-        className="hero-layout relative mx-auto w-full max-w-7xl px-5 pb-10 pt-24 sm:px-8 sm:py-24"
+        className="hero-layout relative mx-auto w-full max-w-7xl px-4 pb-10 pt-24 sm:px-8 sm:py-24"
       >
         <div className="relative z-30 isolate flex flex-col gap-10 min-[600px]:pr-6">
           <p
             ref={eyebrowRef}
-            className="text-xs font-medium uppercase tracking-[0.28em] text-[var(--brand-gold)]"
+            className="text-[11px] font-medium uppercase tracking-[0.16em] text-[var(--brand-gold)] sm:text-xs sm:tracking-[0.28em]"
           >
             Education with direction
           </p>
 
           <h1
             ref={headlineRef}
-            className="font-display text-[clamp(2.5rem,5.5vw,4.25rem)] font-medium leading-[1.08] tracking-tight text-[var(--foreground)]"
+            className="font-display text-[clamp(2.15rem,8.5vw,4.25rem)] font-medium leading-[1.08] tracking-tight text-[var(--foreground)]"
           >
             <span className="hero-line block">Build Strong Concepts.</span>
             <span className="hero-line block text-[var(--brand-gold)]">Create Your Future.</span>
           </h1>
 
-          <p ref={paragraphRef} className="max-w-md text-lg leading-[1.75] text-[var(--muted)]">
+          <p ref={paragraphRef} className="max-w-md text-base leading-[1.75] text-[var(--muted)] sm:text-lg">
             Structured learning paths, expert mentorship, and dedicated doubt support —
             designed for students preparing for board exams, JEE, NEET, and competitive
             excellence.
           </p>
 
-          <div ref={ctaRef} className="relative z-20 flex flex-wrap gap-4">
+          <div ref={ctaRef} className="relative z-20 flex max-w-full flex-wrap gap-3 sm:gap-4">
             <Button href="/courses">Explore Courses</Button>
             <Button href="/contact" variant="secondary">
               Book Free Counselling

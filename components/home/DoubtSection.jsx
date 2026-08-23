@@ -27,7 +27,7 @@ export default function DoubtSection() {
     const ctx = gsap.context(() => {
       gsap.fromTo(
         ".doubt-step",
-        { opacity: 0, x: -30 },
+        { opacity: 0, y: 20 },
         {
           opacity: 1,
           x: 0,

@@ -57,7 +57,7 @@
 html {
   scroll-behavior: auto;
   background: #070605;
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100%;
 }
 
@@ -147,9 +147,33 @@ body {
   transition:
     background-color 0.4s ease,
     color 0.4s ease;
-  overflow-x: hidden;
+  overflow-x: clip;
+  max-width: 100%;
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
+}
+
+main,
+header,
+footer,
+section,
+article {
+  max-width: 100%;
+  min-width: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+li,
+dd,
+dt {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .font-display {
@@ -369,4 +393,134 @@ video {
   opacity: 0.03;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ─── Route transition overlay ─── */
+.bs-route-overlay {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.route-grid {
+  background-image:
+    linear-gradient(rgba(212, 160, 23, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 160, 23, 0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(circle at 50% 46%, #000 12%, transparent 72%);
+  animation: route-grid-drift 10s linear infinite;
+}
+
+.route-sweep {
+  background: linear-gradient(
+    110deg,
+    transparent 32%,
+    rgba(212, 160, 23, 0.12) 50%,
+    transparent 68%
+  );
+  background-size: 220% 100%;
+  animation: route-sweep 1.8s ease-in-out infinite;
+}
+
+.route-glow {
+  background: radial-gradient(circle, rgba(212, 160, 23, 0.24), rgba(107, 20, 32, 0.12) 42%, transparent 70%);
+  animation: route-glow-pulse 1.7s ease-in-out infinite;
+}
+
+.route-ring {
+  animation: route-spin 2.8s linear infinite;
+}
+
+.route-orbit {
+  animation: route-spin-rev 1.7s linear infinite;
+}
+
+.route-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #f0d060;
+  box-shadow: 0 0 10px rgba(240, 208, 96, 0.8);
+}
+
+.route-dot-a {
+  animation: route-orbit-a 2.4s linear infinite;
+}
+
+.route-dot-b {
+  animation: route-orbit-b 3.2s linear infinite;
+}
+
+@keyframes route-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes route-spin-rev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes route-grid-drift {
+  to {
+    background-position: 48px 48px;
+  }
+}
+
+@keyframes route-sweep {
+  0% {
+    background-position: 120% 0;
+    opacity: 0.15;
+  }
+  50% {
+    opacity: 0.45;
+  }
+  100% {
+    background-position: -20% 0;
+    opacity: 0.15;
+  }
+}
+
+@keyframes route-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+}
+
+@keyframes route-orbit-a {
+  from {
+    transform: rotate(0deg) translateX(52px) rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg) translateX(52px) rotate(-360deg);
+  }
+}
+
+@keyframes route-orbit-b {
+  from {
+    transform: rotate(180deg) translateX(38px) rotate(-180deg);
+  }
+  to {
+    transform: rotate(540deg) translateX(38px) rotate(-540deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-grid,
+  .route-sweep,
+  .route-glow,
+  .route-ring,
+  .route-orbit,
+  .route-dot-a,
+  .route-dot-b {
+    animation: none;
+  }
 }

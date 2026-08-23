@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { cn } from "@/lib/utils";
+import { canFinePointer, cn } from "@/lib/utils";
 import { prefersReducedMotion } from "@/lib/gsap";
 
 export default function Magnetic({ children, className, strength = 14 }) {
@@ -36,7 +36,7 @@ export default function Magnetic({ children, className, strength = 14 }) {
   };
 
   const onMove = (event) => {
-    if (prefersReducedMotion()) return;
+    if (prefersReducedMotion() || !canFinePointer()) return;
     const node = ref.current;
     if (!node) return;
     const rect = node.getBoundingClientRect();

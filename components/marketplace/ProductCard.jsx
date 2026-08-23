@@ -34,8 +34,8 @@ export default function ProductCard({ product, featured = false }) {
         <span>{product.reviews} reviews</span>
       </div>
 
-      <div className="flex items-center justify-between border-t border-[var(--border)] pt-4">
-        <div>
+      <div className="flex flex-col gap-3 border-t border-[var(--border)] pt-4 min-[380px]:flex-row min-[380px]:items-center min-[380px]:justify-between">
+        <div className="min-w-0">
           <p className="text-lg font-semibold text-[var(--foreground)]">{formatPrice(product.price)}</p>
           {product.originalPrice > product.price && (
             <p className="text-xs text-[var(--muted)] line-through">
@@ -47,7 +47,7 @@ export default function ProductCard({ product, featured = false }) {
           type="button"
           onClick={() => addItem(product)}
           disabled={!product.inStock}
-          className="rounded-full bg-[var(--brand-gold)] px-4 py-2 text-xs font-medium text-[var(--brand-black)] transition-all duration-200 hover:bg-[#d4b45c] hover:scale-[1.04] active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+          className="w-full rounded-full bg-[var(--brand-gold)] px-4 py-2 text-xs font-medium text-[var(--brand-black)] transition-all duration-200 hover:scale-[1.04] hover:bg-[#d4b45c] active:scale-[0.96] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 min-[380px]:w-auto"
         >
           Add to Cart
         </button>

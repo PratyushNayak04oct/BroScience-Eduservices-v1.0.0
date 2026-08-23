@@ -62,7 +62,7 @@ function AnimatedStat({ stat }) {
 
   return (
     <article ref={ref} className="stat-item">
-      <p className="text-5xl font-semibold tracking-tight text-[var(--foreground)] sm:text-6xl lg:text-7xl">
+      <p className="text-4xl font-semibold tracking-tight text-[var(--foreground)] sm:text-5xl lg:text-6xl xl:text-7xl">
         {display}
       </p>
       <p className="mt-3 text-sm font-medium uppercase tracking-[0.15em] text-[var(--brand-gold)]">

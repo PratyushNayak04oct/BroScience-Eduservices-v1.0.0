@@ -11,7 +11,7 @@ export default function FacultySection() {
   const featured = faculty.find((member) => member.id === activeId) ?? faculty[0];
 
   return (
-    <section className="py-32 sm:py-40 lg:py-48">
+    <section className="py-16 sm:py-32 lg:py-48">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <Reveal>
           <SectionHeading
@@ -23,10 +23,10 @@ export default function FacultySection() {
           />
         </Reveal>
 
-        <div className="grid items-start gap-16 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-24">
+        <div className="grid min-w-0 items-start gap-10 sm:gap-16 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-24">
           <Reveal>
             <article className="group">
-              <div className="relative aspect-[4/5] max-h-[36rem] overflow-hidden border border-[var(--border)] bg-[linear-gradient(160deg,rgba(107,20,32,0.88),rgba(20,17,14,0.92))]">
+              <div className="relative aspect-[4/5] max-h-[min(36rem,70vw)] overflow-hidden border border-[var(--border)] bg-[linear-gradient(160deg,rgba(107,20,32,0.88),rgba(20,17,14,0.92))] sm:max-h-[36rem]">
                 <div
                   className="absolute inset-0 opacity-40 transition-transform duration-700 ease-out group-hover:scale-110"
                   style={{

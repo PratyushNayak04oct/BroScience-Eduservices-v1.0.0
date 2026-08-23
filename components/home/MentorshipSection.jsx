@@ -62,7 +62,7 @@ export default function MentorshipSection() {
 
       gsap.fromTo(
         ".mentor-dashboard",
-        { opacity: 0, x: 40 },
+        { opacity: 0, y: 24 },
         {
           opacity: 1,
           x: 0,
@@ -80,7 +80,7 @@ export default function MentorshipSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-24 sm:py-32 lg:py-40">
+    <section ref={sectionRef} className="relative overflow-x-clip py-24 sm:py-32 lg:py-40">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <div className="grid gap-16 lg:grid-cols-2 lg:gap-20">
           <div>
@@ -121,7 +121,7 @@ export default function MentorshipSection() {
           {/* Dashboard-inspired visual */}
           <div className="mentor-dashboard lg:pt-16">
             <GlassCard className="overflow-hidden p-6 sm:p-8">
-              <div className="flex items-center justify-between border-b border-[var(--border)] pb-4">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border)] pb-4">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--muted)]">
                     Student Dashboard

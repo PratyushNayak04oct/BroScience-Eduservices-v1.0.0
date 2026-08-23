@@ -23,14 +23,14 @@ export default function CourseCard({ course }) {
         </p>
       </div>
 
-      <div className="flex items-center justify-between border-t border-[var(--border)] pt-5">
-        <div>
+      <div className="flex flex-col gap-4 border-t border-[var(--border)] pt-5 min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between">
+        <div className="min-w-0">
           <p className="text-xs text-[var(--muted)]">Starting from</p>
           <p className="text-lg font-semibold text-[var(--foreground)]">
             {formatPrice(course.fee)}
           </p>
         </div>
-        <Button href={`/courses/${course.slug}`} className="!px-4 !py-2 !text-xs">
+        <Button href={`/courses/${course.slug}`} className="w-full !px-4 !py-2 !text-xs min-[420px]:w-auto">
           View Details
         </Button>
       </div>

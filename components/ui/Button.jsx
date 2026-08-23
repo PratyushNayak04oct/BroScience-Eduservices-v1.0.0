@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { canFinePointer, cn } from "@/lib/utils";
 import { prefersReducedMotion } from "@/lib/gsap";
 
 const variants = {
@@ -52,7 +52,7 @@ export default function Button({
   const magnetRef = useRef(null);
 
   const onMagnetMove = (event) => {
-    if (prefersReducedMotion() || disabled) return;
+    if (prefersReducedMotion() || disabled || !canFinePointer()) return;
     const node = magnetRef.current;
     if (!node) return;
     const rect = node.getBoundingClientRect();
@@ -72,7 +72,7 @@ export default function Button({
   const isFullWidth = typeof className === "string" && className.includes("w-full");
 
   const classes = cn(
-    "group relative z-20 inline-flex min-h-11 items-center justify-center gap-2.5 overflow-hidden rounded-full px-6 py-3 text-sm font-medium tracking-wide",
+    "group relative z-20 inline-flex min-h-11 max-w-full items-center justify-center gap-2.5 overflow-hidden rounded-full px-5 py-3 text-sm font-medium tracking-wide sm:px-6",
     "pointer-events-auto touch-manipulation cursor-pointer",
     "transition-[color,background-color,border-color,box-shadow,transform] duration-200 ease-out",
     "active:scale-[0.97]",
@@ -86,7 +86,7 @@ export default function Button({
     <>
       <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
       {icon && <span className="relative shrink-0">{icon}</span>}
-      <span className="relative">{children}</span>
+      <span className="relative min-w-0 text-center">{children}</span>
       <ArrowIcon className="relative shrink-0 transition-transform duration-300 ease-out group-hover:translate-x-1.5" />
     </>
   );
@@ -109,7 +109,7 @@ export default function Button({
   const magnet = (node) => (
     <span
       ref={magnetRef}
-      className={cn("inline-flex will-change-transform", isFullWidth && "w-full")}
+      className={cn("inline-flex max-w-full will-change-transform", isFullWidth && "w-full")}
       onMouseMove={onMagnetMove}
       onMouseLeave={onMagnetLeave}
     >

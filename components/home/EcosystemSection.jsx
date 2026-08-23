@@ -26,7 +26,7 @@ export default function EcosystemSection() {
           {/* Courses */}
           <Reveal>
             <div className="flex h-full flex-col">
-              <div className="flex items-center justify-between">
+              <div className="flex min-w-0 items-center justify-between gap-3">
                 <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--brand-gold)]">
                   Courses
                 </h3>
@@ -60,7 +60,7 @@ export default function EcosystemSection() {
           {/* Marketplace */}
           <Reveal delay={0.1}>
             <div className="flex h-full flex-col">
-              <div className="flex items-center justify-between">
+              <div className="flex min-w-0 items-center justify-between gap-3">
                 <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--brand-gold)]">
                   Marketplace
                 </h3>
@@ -94,7 +94,7 @@ export default function EcosystemSection() {
           {/* Blogs */}
           <Reveal delay={0.2}>
             <div className="flex h-full flex-col">
-              <div className="flex items-center justify-between">
+              <div className="flex min-w-0 items-center justify-between gap-3">
                 <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-[var(--brand-gold)]">
                   Blogs
                 </h3>

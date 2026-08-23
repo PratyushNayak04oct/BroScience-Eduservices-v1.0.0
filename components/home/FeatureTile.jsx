@@ -25,7 +25,7 @@ export default function FeatureTile({ feature, index }) {
   return (
     <Reveal delay={index * 0.05} className="h-full bg-[var(--background)]">
       <div
-        className="group relative h-full overflow-hidden p-8 sm:p-10 transition-[background-color,transform] duration-500 hover:-translate-y-1 hover:bg-[var(--surface)]"
+        className="group relative h-full overflow-hidden p-6 transition-[background-color,transform] duration-500 hover:-translate-y-1 hover:bg-[var(--surface)] sm:p-10"
         onMouseMove={onMove}
         onMouseLeave={onLeave}
       >

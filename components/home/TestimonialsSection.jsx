@@ -32,7 +32,7 @@ export default function TestimonialsSection() {
               className="group w-[min(20rem,calc(100vw-2.5rem))] shrink-0 transition-transform duration-500 hover:-translate-y-1 sm:w-[28rem] lg:w-[32rem]"
             >
               <blockquote>
-                <p className="text-2xl font-medium leading-snug tracking-tight text-[var(--foreground)] sm:text-3xl">
+                <p className="text-xl font-medium leading-snug tracking-tight text-[var(--foreground)] sm:text-2xl lg:text-3xl">
                   &ldquo;{testimonial.quote}&rdquo;
                 </p>
               </blockquote>

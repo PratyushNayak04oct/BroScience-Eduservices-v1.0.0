@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { cn } from "@/lib/utils";
+import { canFinePointer, cn } from "@/lib/utils";
 import { prefersReducedMotion } from "@/lib/gsap";
 
 export default function GlassCard({
@@ -26,7 +26,7 @@ export default function GlassCard({
   };
 
   const onMove = (event) => {
-    if (!interactive || prefersReducedMotion()) return;
+    if (!interactive || prefersReducedMotion() || !canFinePointer()) return;
     const node = ref.current;
     if (!node) return;
     const rect = node.getBoundingClientRect();
@@ -47,7 +47,7 @@ export default function GlassCard({
     <Component
       ref={ref}
       className={cn(
-        "glass-panel relative overflow-hidden rounded-sm will-change-transform",
+        "glass-panel relative max-w-full overflow-hidden rounded-sm will-change-transform",
         interactive && "group/card",
         className
       )}
