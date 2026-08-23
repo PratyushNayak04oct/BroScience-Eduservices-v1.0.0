@@ -10,7 +10,7 @@ import { getLoaderMode, markIntroSeen } from "@/lib/loading/loaderStore";
 import { statusForStory, getPhaseAlphas } from "@/lib/loading/loaderProgress";
 import { gsap, initGsap, prefersReducedMotion } from "@/lib/gsap";
 
-const HARD_TIMEOUT = 14000;
+const HARD_TIMEOUT = 22000;
 
 export default function BroScienceLoader({ waitForBook = false, onRevealSite, onComplete }) {
   const overlayRef = useRef(null);
