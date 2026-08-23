@@ -52,11 +52,11 @@ export default function ScientificCursor({ enabled = false }) {
     <>
       <span
         ref={dotRef}
-        className="pointer-events-none fixed left-0 top-0 z-[210] h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d4a017] shadow-[0_0_10px_rgba(212,160,23,0.55)]"
+        className="pointer-events-none fixed left-0 top-0 z-[210] h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d4a017] shadow-[0_0_14px_rgba(212,160,23,0.6)]"
       />
       <span
         ref={ringRef}
-        className="pointer-events-none fixed left-0 top-0 z-[210] h-11 w-11 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#d4a017]/55"
+        className="pointer-events-none fixed left-0 top-0 z-[210] h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[#d4a017]/60"
       />
     </>
   );

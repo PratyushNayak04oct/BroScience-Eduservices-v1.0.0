@@ -20,6 +20,12 @@ const bodyFont = DM_Sans({
   display: "swap",
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata = {
   title: {
     default: "BroScience Eduservices",

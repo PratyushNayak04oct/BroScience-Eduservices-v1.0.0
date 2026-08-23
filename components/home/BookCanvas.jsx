@@ -108,6 +108,10 @@ export default function BookCanvas({ animationRefs, onReady, hoverRef: hoverRefP
 
   useEffect(() => {
     const pad = 12;
+    let closeTimer = 0;
+
+    const canHover = () =>
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
     const isInside = (x, y) => {
       const el = wrapperRef.current;
@@ -119,10 +123,12 @@ export default function BookCanvas({ animationRefs, onReady, hoverRef: hoverRefP
     const onMove = (event) => {
       mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouseRef.current.y = (event.clientY / window.innerHeight) * 2 - 1;
+      if (!canHover()) return;
       hoverRef.current = isInside(event.clientX, event.clientY);
     };
 
     const seed = () => {
+      if (!canHover()) return;
       const el = wrapperRef.current;
       if (el) {
         try {
@@ -134,8 +140,13 @@ export default function BookCanvas({ animationRefs, onReady, hoverRef: hoverRefP
     };
 
     const onDown = (event) => {
-      if (event.pointerType === "mouse") return;
-      hoverRef.current = isInside(event.clientX, event.clientY) ? !hoverRef.current : false;
+      if (canHover() || event.pointerType === "mouse") return;
+      if (!isInside(event.clientX, event.clientY)) return;
+      hoverRef.current = true;
+      window.clearTimeout(closeTimer);
+      closeTimer = window.setTimeout(() => {
+        hoverRef.current = false;
+      }, 10000);
     };
 
     window.addEventListener("pointermove", onMove, { passive: true });
@@ -144,6 +155,7 @@ export default function BookCanvas({ animationRefs, onReady, hoverRef: hoverRefP
     return () => {
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerdown", onDown);
+      window.clearTimeout(closeTimer);
       cancelAnimationFrame(frame);
     };
   }, [hoverRef]);

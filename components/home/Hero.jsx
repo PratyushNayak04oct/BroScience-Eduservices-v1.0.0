@@ -102,10 +102,15 @@ export default function Hero() {
       return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
     };
 
+    const canHover = () =>
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
     const onMove = (event) => {
+      if (!canHover()) return;
       bookHoverRef.current = hit(event.clientX, event.clientY);
     };
     const onLeave = () => {
+      if (!canHover()) return;
       bookHoverRef.current = false;
     };
 
@@ -121,7 +126,7 @@ export default function Hero() {
 
   return (
     <section
-      className="relative flex min-h-[100svh] overflow-hidden"
+      className="relative flex min-h-0 overflow-hidden min-[600px]:min-h-[100svh]"
       aria-label="BroScience Eduservices — Hero"
     >
       <div className="pointer-events-none absolute inset-0" aria-hidden="true">
@@ -155,7 +160,7 @@ export default function Hero() {
           cannot create a page scrollbar. */}
       <div
         ref={contentRef}
-        className="hero-layout relative mx-auto w-full max-w-7xl px-5 py-24 sm:px-8"
+        className="hero-layout relative mx-auto w-full max-w-7xl px-5 pb-10 pt-24 sm:px-8 sm:py-24"
       >
         <div className="relative z-30 isolate flex flex-col gap-10 min-[600px]:pr-6">
           <p
@@ -192,34 +197,39 @@ export default function Hero() {
         </div>
 
         {/* Scene is larger than the book so opening pages stay inside the canvas. */}
-        <div
-          ref={sceneRef}
-          className="hero-scene"
-          onPointerEnter={() => {
-            bookHoverRef.current = true;
-          }}
-          onPointerLeave={() => {
-            bookHoverRef.current = false;
-          }}
-        >
-          <div className="book-aura" aria-hidden="true" />
-          <div className="book-aura-core" aria-hidden="true" />
-          {hasEntered && (canRenderWebGL === null || (useCanvas && !sceneReady)) ? (
-            <BookLoading className="pointer-events-none absolute inset-0 rounded-sm" />
-          ) : null}
-          {useCanvas ? (
-            <BookCanvas
-              animationRefs={animationRefs}
-              onReady={handleSceneReady}
-              hoverRef={bookHoverRef}
-              className="absolute inset-0 z-10 h-full w-full"
-            />
-          ) : canRenderWebGL === false ? (
-            <BookFallback
-              animationRefs={animationRefs}
-              className="absolute inset-0 h-full w-full"
-            />
-          ) : null}
+        <div className="flex min-w-0 flex-col">
+          <div
+            ref={sceneRef}
+            className="hero-scene"
+            onPointerEnter={(event) => {
+              if (event.pointerType === "mouse") bookHoverRef.current = true;
+            }}
+            onPointerLeave={(event) => {
+              if (event.pointerType === "mouse") bookHoverRef.current = false;
+            }}
+          >
+            <div className="book-aura" aria-hidden="true" />
+            <div className="book-aura-core" aria-hidden="true" />
+            {hasEntered && (canRenderWebGL === null || (useCanvas && !sceneReady)) ? (
+              <BookLoading className="pointer-events-none absolute inset-0 rounded-sm" />
+            ) : null}
+            {useCanvas ? (
+              <BookCanvas
+                animationRefs={animationRefs}
+                onReady={handleSceneReady}
+                hoverRef={bookHoverRef}
+                className="absolute inset-0 z-10 h-full w-full"
+              />
+            ) : canRenderWebGL === false ? (
+              <BookFallback
+                animationRefs={animationRefs}
+                className="absolute inset-0 h-full w-full"
+              />
+            ) : null}
+          </div>
+          <p className="mt-3 text-center text-[11px] tracking-[0.18em] text-[var(--muted)] [@media(hover:hover)_and_(pointer:fine)]:hidden">
+            Tap the book to open · closes in 10s
+          </p>
         </div>
       </div>
     </section>
